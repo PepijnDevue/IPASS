@@ -1,0 +1,11 @@
+Interview 1:
+    Planning:
+        Explain roll (client, anti tunnel vision, critical thinker)
+        Assignment description
+        Ask starting demands (application, functionality, anything else)
+    Notes:
+        Tile animation (to able to follow the game easily)
+        Application knows checkers rules (No confusion, no cheating)
+        Indicator for legal moves when selecting piece
+        Indicator for previous position last-moved piece
+        Button to commit your turn (review game state more easily)
