@@ -1,36 +1,41 @@
+Files:
+
+
 Menu:
     game_mode(option):
         start chose game mode (from button click)
     exit():
         exit application
 
+Piece:
+    type = P or K 
+    player = B or W
+
+    valid_moves(pos): -> list of tuples(positions to move to)
+        Get all valid moves for one pieces
+
+    move(new_pos): -> bool(if the turn ends afterwards (false if you can take again))
+        Move to new pos, if the move is a take, check if you can take again
+
+    to_king():
+        type = K
+
+    _init_(self, player)
+
+Board:
+    board[8][8]
+
+    get_board()
+    set_board()
+
 Game:
     start_pvp():
         Create board, create pieces, start turn handler
 
     start_pve():
-        Create board, create pieces, set depth minimax
-
-    class Piece:
-        type = P or K 
-        player = B or W
-
-        valid_moves(pos): -> list of tuples(positions to move to)
-            Get all valid moves for one pieces
-
-        move(new_pos): -> bool(if the turn ends afterwards (false if you can take again))
-            Move to new pos, if the move is a take, check if you can take again
-
-        to_king():
-            type = K
-
-        Piece()
-
-    class Board:
-        positions[8][8]
-
-        remove_piece(pos):
-        get_player_pieces(player): -> 
+        Create board, create pieces, set depth minimax    
     
+Minimax:
+
 
     
