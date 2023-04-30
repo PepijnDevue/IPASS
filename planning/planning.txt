@@ -3,3 +3,8 @@ Programming type: Object Oriented
 
 Used libraries:
     Pyglet
+
+Used sources:
+    https://pyglet.readthedocs.io/en/latest/index.html#
+    https://www.geeksforgeeks.org/pyglet-on-draw-event/
+    
