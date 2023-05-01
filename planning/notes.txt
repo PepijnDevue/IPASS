@@ -1,2 +1,10 @@
 Structuring from here on out??
 How to structure gamemodes??
+
+
+
+
+Brainstorm functions, classes, positions step-by-step:
+    1. a function (which function) is called when it is player 1's turn
+        with the square that is clicked
+    2. 
