@@ -7,4 +7,5 @@ Used libraries:
 Used sources:
     https://pyglet.readthedocs.io/en/latest/index.html#
     https://www.geeksforgeeks.org/pyglet-on-draw-event/
-    
+    https://www.w3schools.com/python/python_classes.asp
+    https://www.geeksforgeeks.org/default-arguments-in-python/
