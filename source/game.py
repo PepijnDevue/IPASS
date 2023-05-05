@@ -1,7 +1,3 @@
-import pyglet
-from constants import WINDOW_SIZE
-import menu
-
 # def open_game(game_mode):
 #     window = pyglet.window.Window(WINDOW_SIZE, WINDOW_SIZE, "Dammen spel")
 
@@ -21,7 +17,8 @@ import menu
 #         for square in black_squares:
 #             square.draw()
 
-if __name__ == '__main__':
-    window = pyglet.window.Window(WINDOW_SIZE, WINDOW_SIZE, "Dammen")
-    menu.open_menu(window)
-    pyglet.app.run()
+def start_pvp():
+    print("PVP")
+
+def start_pve():
+    print("PVE")
