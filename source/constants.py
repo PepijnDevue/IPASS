@@ -9,3 +9,9 @@ GREY = (155, 155, 155)
 BLACK = (0,0,0,255)
 
 START_BOARD = []
+
+PLAYER_BLACK = "B"
+PLAYER_WHITE = "W"
+
+PIECE = "P"
+KING = "K"

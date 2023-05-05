@@ -17,6 +17,15 @@
 #         for square in black_squares:
 #             square.draw()
 
+def start_boardstate():
+    """
+    Generate the starting game state for the game 
+    in format of a 2D array containing Piece objects
+
+    return(array[8][8]): The starting game state of the game
+    """
+    return []
+
 def start_pvp():
     print("PVP")
 
