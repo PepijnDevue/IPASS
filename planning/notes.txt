@@ -1,5 +1,5 @@
 Structuring from here on out??
-How to structure gamemodes??
+How to structure game modes??
 
 
 

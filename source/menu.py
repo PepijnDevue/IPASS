@@ -4,7 +4,7 @@ from game import start_pve, start_pvp
 
 def open_menu(window):
     """
-    Open the menu page where the player can choose the gamemode, pvp or pve
+    Open the menu page where the player can choose the game mode, pvp or pve
 
     Args:
         window (pyglet.window.Window): The window in which the menu should be displayed
