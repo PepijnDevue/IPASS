@@ -7,7 +7,7 @@ class Piece:
         pass
 
 # class Board:
-#     def __init__(self, board=)
+#     def __init__(self, size)
 
 def start_pvp():
     print("PVP")
