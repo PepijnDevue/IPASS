@@ -7,4 +7,4 @@ class Board:
 
     board(array): 2D array representing all positions on the board
     """
-    board = start_boardstate()
+    positions = start_boardstate()

@@ -1,3 +1,5 @@
+import Board
+
 # def open_game(game_mode):
 #     window = pyglet.window.Window(WINDOW_SIZE, WINDOW_SIZE, "Dammen spel")
 
@@ -24,10 +26,17 @@ def start_boardstate():
 
     return(array[8][8]): The starting game state of the game
     """
-    return []
+    board = []
+    for y in range(8):
+        for x in range(8):
+            print(x, y)
+
+    return board
 
 def start_pvp():
     print("PVP")
+    board = Board.Board()
+    print(board.positions)
 
 def start_pve():
     print("PVE")
