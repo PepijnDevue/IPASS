@@ -1,5 +1,4 @@
 # imports
-from constants import START_BOARD
 from game import start_boardstate
 
 class Board:
