@@ -19,20 +19,6 @@ import Board
 #         for square in black_squares:
 #             square.draw()
 
-def start_boardstate():
-    """
-    Generate the starting game state for the game 
-    in format of a 2D array containing Piece objects
-
-    return(array[8][8]): The starting game state of the game
-    """
-    board = []
-    for y in range(8):
-        for x in range(8):
-            print(x, y)
-
-    return board
-
 def start_pvp():
     print("PVP")
     board = Board.Board()

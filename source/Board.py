@@ -1,5 +1,19 @@
 # imports
-from game import start_boardstate
+
+
+def start_boardstate():
+    """
+    Generate the starting game state for the game 
+    in format of a 2D array containing Piece objects
+
+    return(array[8][8]): The starting game state of the game
+    """
+    board = []
+    for y in range(8):
+        for x in range(8):
+            print(x, y)
+
+    return board
 
 class Board:
     """
@@ -9,5 +23,5 @@ class Board:
     """
     positions = start_boardstate()
     
-    selected = (1,0)
-    highlighted = [(2,0), (5,4)]
+    selected = ()
+    highlighted = []
