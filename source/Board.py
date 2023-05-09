@@ -1,5 +1,6 @@
 # imports
-
+from Piece import Piece
+from constants import PLAYER_BLACK, PLAYER_WHITE
 
 def start_boardstate():
     """
@@ -10,8 +11,17 @@ def start_boardstate():
     """
     board = []
     for y in range(8):
+        board.append([])
         for x in range(8):
-            print(x, y)
+            if y%2 == x%2:
+                if y < 3:
+                    board[y].append(Piece(PLAYER_WHITE))
+                elif y > 4:
+                    board[y].append(Piece(PLAYER_BLACK))
+                else:
+                    board[y].append(None)
+            else:
+                board[y].append(None)
 
     return board
 
