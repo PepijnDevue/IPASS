@@ -19,10 +19,13 @@ import Board
 #         for square in black_squares:
 #             square.draw()
 
-def start_pvp():
+def draw_window(window):
+    window.clear()#TODO: DOES NOT CLEAR
+
+def start_pvp(window):
     print("PVP")
     board = Board.Board()
-    print(board.positions)
+    draw_window(window)
 
-def start_pve():
+def start_pve(window):
     print("PVE")

@@ -49,7 +49,7 @@ def open_menu(window):
         """
         # if the click position was within the PvP button
         if(x > pvp_button.x and x < pvp_button.x+pvp_button.width and y > pvp_button.y and y < pvp_button.y+pvp_button.height and button == pyglet.window.mouse.LEFT):
-            start_pvp()
+            start_pvp(window)
         # else if the click position was within the PvE button
         elif(x > pve_button.x and x < pve_button.x+pve_button.width and y > pve_button.y and y < pve_button.y+pve_button.height and button == pyglet.window.mouse.LEFT):
-            start_pve()
+            start_pve(window)
