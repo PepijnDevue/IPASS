@@ -20,7 +20,7 @@ import Board
 #             square.draw()
 
 def draw_window(window):
-    window.clear()#TODO: DOES NOT CLEAR
+    window.clear()#TODO: DOES NOT CLEAR 
 
 def start_pvp(window):
     print("PVP")
