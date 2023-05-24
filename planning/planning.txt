@@ -9,5 +9,4 @@ Used sources:
     https://www.geeksforgeeks.org/pyglet-on-draw-event/
     https://www.w3schools.com/python/python_classes.asp
     https://www.geeksforgeeks.org/default-arguments-in-python/
-    google scholar
-    https://arxiv.org/ftp/arxiv/papers/1404/1404.1518.pdf
+    http://users.encs.concordia.ca/~kharma/coen352/Project/Minimax-notes.pdf
