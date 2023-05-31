@@ -1,4 +1,6 @@
 import Board
+import pyglet
+from constants import SQUARE_SIZE, YELLOW, BROWN
 
 # def open_game(game_mode):
 #     window = pyglet.window.Window(WINDOW_SIZE, WINDOW_SIZE, "Dammen spel")
@@ -20,12 +22,31 @@ import Board
 #             square.draw()
 
 def draw_window(window):
-    window.clear()#TODO: DOES NOT CLEAR 
+    @window.event
+    def on_draw():
+        window.clear()
+        for y in range(8):
+            for x in range(8):
+                if y%2 == x%2:
+                    pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, BROWN).draw()
+                else:
+                    pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
+    
 
 def start_pvp(window):
+    @window.event
+    def on_mouse_press(x, y, button, modifiers):
+        print('pvpclick')
+
     print("PVP")
     board = Board.Board()
     draw_window(window)
 
 def start_pve(window):
+    @window.event
+    def on_mouse_press(x, y, button, modifiers):
+        print('pveclick')
+
     print("PVE")
+    board = Board.Board()
+    draw_window(window)

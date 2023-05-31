@@ -11,8 +11,8 @@ def open_menu(window):
         window (pyglet.window.Window): The window in which the menu should be displayed
     """
     # display a title and background
-    title = pyglet.text.Label('Dammen',font_size=54, x=WINDOW_SIZE//2, y=WINDOW_SIZE//1.3, anchor_x='center', anchor_y='center', color=BLACK)
     menu_background = pyglet.shapes.Rectangle(x=0, y=0, width=WINDOW_SIZE, height=WINDOW_SIZE, color=YELLOW)
+    title = pyglet.text.Label('Dammen',font_size=54, x=WINDOW_SIZE//2, y=WINDOW_SIZE//1.3, anchor_x='center', anchor_y='center', color=BLACK)
 
     # display a button for PvE
     pve_button = pyglet.shapes.Rectangle(x=WINDOW_SIZE//2-BUTTON_WIDTH//2, y=WINDOW_SIZE//2-BUTTON_HEIGHT//2, width=BUTTON_WIDTH, height=BUTTON_HEIGHT,color=GREY)
