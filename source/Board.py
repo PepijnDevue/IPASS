@@ -1,6 +1,7 @@
 # imports
 from Piece import Piece
-from constants import PLAYER_BLACK, PLAYER_WHITE
+import pyglet
+from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING
 
 def start_boardstate():
     """
@@ -35,3 +36,27 @@ class Board:
     
     selected = ()
     highlighted = []
+
+    def drawPiece(self, x, y):
+        piece = self.positions[y][x]
+        if piece == None:
+            return
+        if piece.player == PLAYER_BLACK:
+            pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, y=y*SQUARE_SIZE+SQUARE_SIZE//2, radius=SQUARE_SIZE//3, color=BLACK).draw()
+        elif piece.player == PLAYER_WHITE:
+            pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, y=y*SQUARE_SIZE+SQUARE_SIZE//2, radius=SQUARE_SIZE//3, color=WHITE).draw()
+
+    def printPos(self, x, y):
+        piece = self.positions[y][x]
+        if piece == None:
+            print(None)
+        elif piece.type == PIECE:
+            if piece.player == PLAYER_WHITE:
+                print("White piece")
+            else:
+                print("Black piece")
+        else:
+            if piece.player == PLAYER_WHITE:
+                print("White king")
+            else:
+                print("Black king")
