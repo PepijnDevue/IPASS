@@ -1,8 +1,18 @@
 import Board
 import pyglet
-from constants import SQUARE_SIZE, YELLOW, BROWN
+from constants import SQUARE_SIZE, YELLOW, BROWN, PVE, PVP
 
-def draw_window(window, board):
+def start_game(window, gameMode):
+    """
+    Initiate all necessary components for the gameloop
+
+    Args:
+        window (Pyglet.window): The window object to display the board
+        gameMode (string): The current game mode (PVE or PVP)
+    """
+    print(gameMode)
+    board = Board.Board()
+
     @window.event
     def on_draw():
         window.clear()
@@ -13,23 +23,7 @@ def draw_window(window, board):
                 else:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
                 board.drawPiece(x, y)
-                
-    
 
-def start_pvp(window):
     @window.event
     def on_mouse_press(x, y, button, modifiers):
         board.printPos(x//SQUARE_SIZE, y//SQUARE_SIZE)
-
-    print("PVP")
-    board = Board.Board()
-    draw_window(window, board)
-
-def start_pve(window):
-    @window.event
-    def on_mouse_press(x, y, button, modifiers):
-        board.printPos(x//SQUARE_SIZE, y//SQUARE_SIZE)
-
-    print("PVE")
-    board = Board.Board()
-    draw_window(window, board)

@@ -14,6 +14,7 @@ def start_boardstate():
     for y in range(8):
         board.append([])
         for x in range(8):
+            # If the position is a black square, check if and which piece should be placed there
             if y%2 == x%2:
                 if y < 3:
                     board[y].append(Piece(PLAYER_WHITE))
@@ -38,6 +39,13 @@ class Board:
     highlighted = []
 
     def drawPiece(self, x, y):
+        """
+        Draw the contents of a square on the board
+
+        Args:
+            x (int): The x coordinate of the board 0-7
+            y (int): The y coordinate of the board 0-7
+        """
         piece = self.positions[y][x]
         if piece == None:
             return
@@ -47,16 +55,23 @@ class Board:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, y=y*SQUARE_SIZE+SQUARE_SIZE//2, radius=SQUARE_SIZE//3, color=WHITE).draw()
 
     def printPos(self, x, y):
+        """
+        Print the contents of a square in the cli
+
+        Args:
+            x (int): The x coordinate of the board 0-7
+            y (int): The y coordinate of the board 0-7
+        """
         piece = self.positions[y][x]
         if piece == None:
-            print(None)
+            print(None, x, y)
         elif piece.type == PIECE:
             if piece.player == PLAYER_WHITE:
-                print("White piece")
+                print("White piece", x, y)
             else:
-                print("Black piece")
+                print("Black piece", x, y)
         else:
             if piece.player == PLAYER_WHITE:
-                print("White king")
+                print("White king", x, y)
             else:
-                print("Black king")
+                print("Black king", x, y)

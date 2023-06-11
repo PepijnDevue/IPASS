@@ -15,3 +15,6 @@ PLAYER_WHITE = "W"
 
 PIECE = "P"
 KING = "K"
+
+PVE = "PVE"
+PVP = "PVP"
