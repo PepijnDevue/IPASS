@@ -75,3 +75,9 @@ class Board:
                 print("White king", x, y)
             else:
                 print("Black king", x, y)
+
+    def showHighlights(self, selected, board):
+        if(selected == None or board.positions[selected[1]][selected[0]] == None):
+            print("None")
+        else:
+            print("Not None")

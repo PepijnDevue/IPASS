@@ -1,6 +1,6 @@
 import Board
 import pyglet
-from constants import SQUARE_SIZE, YELLOW, BROWN, PVE, PVP
+from constants import SQUARE_SIZE, YELLOW, BROWN, PVE, PVP, PLAYER_BLACK, PLAYER_WHITE
 
 def start_game(window, gameMode):
     """
@@ -12,10 +12,14 @@ def start_game(window, gameMode):
     """
     print(gameMode)
     board = Board.Board()
+    current = PLAYER_WHITE
+    selected = None
 
     @window.event
     def on_draw():
         window.clear()
+        # print("s",selected)
+        board.showHighlights(selected, board)
         for x in range(8):
             for y in range(8):
                 if y%2 == x%2:
@@ -26,4 +30,6 @@ def start_game(window, gameMode):
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
+        nonlocal selected
         board.printPos(x//SQUARE_SIZE, y//SQUARE_SIZE)
+        selected = [x//SQUARE_SIZE, y//SQUARE_SIZE]
