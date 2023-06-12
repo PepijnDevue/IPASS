@@ -1,4 +1,5 @@
 import Board
+import menu
 import pyglet
 from constants import SQUARE_SIZE, YELLOW, BROWN, PVE, PVP, PLAYER_BLACK, PLAYER_WHITE
 
@@ -13,6 +14,7 @@ def start_game(window, gameMode):
     print(gameMode)
     board = Board.Board()
     current_player = PLAYER_WHITE
+    playing = True
     selected = [0,0]
     highlighted = []
 
@@ -31,24 +33,32 @@ def start_game(window, gameMode):
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
-        nonlocal selected, highlighted, current_player
-        x = x//SQUARE_SIZE
-        y = y//SQUARE_SIZE
-        if [x,y] in highlighted:
-            # make the move
-            board.move(selected[0], selected[1], x, y)
+        nonlocal selected, highlighted, current_player, playing
 
-            # prepare next turn
-            highlighted = []
-            if current_player == PLAYER_WHITE:
-                current_player = PLAYER_BLACK
-                selected = [0, 7]
+        if playing:
+            x = x//SQUARE_SIZE
+            y = y//SQUARE_SIZE
+            if [x,y] in highlighted:
+                # make the move
+                board.move(selected[0], selected[1], x, y)
+
+                # prepare next turn
+                highlighted = []
+                if current_player == PLAYER_WHITE:
+                    if len(board.getPieces(PLAYER_BLACK)) == 0:
+                        playing = False
+                    current_player = PLAYER_BLACK
+                    selected = [0, 7]
+                else:
+                    if len(board.getPieces(PLAYER_WHITE)) == 0:
+                        playing = False
+                    current_player = PLAYER_WHITE
+                    selected = [7, 0]
             else:
-                current_player = PLAYER_WHITE
-                selected = [7, 0]
+                # select
+                board.printPos(x, y)
+                selected = [x, y]
+                highlighted = board.possibleMoves(selected[0], selected[1], current_player)
+            print(f"Player: {current_player}, Highlighted: {highlighted}")
         else:
-            # select
-            board.printPos(x, y)
-            selected = [x, y]
-            highlighted = board.possibleMoves(selected[0], selected[1], current_player)
-        print(f"Player: {current_player}, Highlighted: {highlighted}")
+            pyglet.app.exit()
