@@ -34,19 +34,6 @@ class Board:
     board(array): 2D array representing all positions on the board
     """
     positions = start_boardstate()
-    
-    selected = ()
-    highlighted = []
-
-    def drawHighlight(self, x:int, y:int):
-        """
-        Highlight a given square, indicating possible move
-
-        Args:
-            x (int): X coordinate, 0-7
-            y (int): Y coordinate, 0-7
-        """
-        pyglet.shapes.Rectangle(x=x*SQUARE_SIZE, y=y*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=HIGHLIGHT).draw()
 
     def drawSelected(self, x:int, y:int):
         """
@@ -137,37 +124,54 @@ class Board:
             
 
     def possibleMoves(self, x:int, y:int, player:str):
-        #TODO: fill in the if (use recursion for multi-captures)
+        #TODO: fill in the king moves and the multi-captures(recursion) (use recursion for multi-captures)
         current_piece = self.positions[y][x]
-        positions = []
+        moves = []
+        captures = []
 
+        # None selected, movable pieces
         if(current_piece == None or current_piece.player != player):
-            pieces = self.getPieces(player)
-            for piece in pieces:
-                leng = len(self.possibleMoves(piece[0], piece[1], player))
-                if leng != 0:
-                    positions.append(piece)
-            return positions
+            return moves
         
+        # piece moves
         elif(current_piece.type == PIECE):
             if current_piece.player == PLAYER_WHITE:
+                # move left-up
                 if (self.withinBoard(x-1, y+1) and self.positions[y+1][x-1] == None):
-                    positions.append([x-1, y+1])
+                    moves.append([x-1, y+1])
+                # move right-up
                 if (self.withinBoard(x+1, y+1) and self.positions[y+1][x+1] == None):
-                    positions.append([x+1, y+1])
-                return positions
+                    moves.append([x+1, y+1])
+                # (multi)capture left-up
+                if (self.withinBoard(x-2, y+2) and self.positions[y+1][x-1] != None and self.positions[y+1][x-1].player == PLAYER_BLACK and self.positions[y+2][x-2] == None):
+                    captures.append([x-2, y+2])
+                # (multi)capture right-up
+                if (self.withinBoard(x+2, y+2) and self.positions[y+1][x+1] != None and self.positions[y+1][x+1].player == PLAYER_BLACK and self.positions[y+2][x+2] == None):
+                    captures.append([x+2, y+2])
             else:
+                # move left-down
                 if (self.withinBoard(x-1, y-1) and self.positions[y-1][x-1] == None):
-                    positions.append([x-1, y-1])
+                    moves.append([x-1, y-1])
+                # move right-down
                 if (self.withinBoard(x+1, y-1) and self.positions[y-1][x+1] == None):
-                    positions.append([x+1, y-1])
-                return positions
-            
+                    moves.append([x+1, y-1])
+                # (multi)capture left-down
+                if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_BLACK and self.positions[y-2][x-2] == None):
+                    captures.append([x-2, y-2])
+                # (multi)capture right-down
+                if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_BLACK and self.positions[y-2][x+2] == None):
+                    captures.append([x+2, y-2])
+
+        # king moves   
         elif(current_piece.player == PLAYER_WHITE):
-            return positions
+            pass
         
         else:
-            return positions
+            pass
+
+        if len(captures) != 0:
+            return captures
+        return moves
 
     def showHighlights(self, selected:list, player:str):
         """
@@ -179,4 +183,4 @@ class Board:
         """
         positions = self.possibleMoves(selected[0], selected[1], player)
         for pos in positions:
-            self.drawHighlight(pos[0], pos[1])
+            pyglet.shapes.Rectangle(x=pos[0]*SQUARE_SIZE, y=pos[1]*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=HIGHLIGHT).draw()

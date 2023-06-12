@@ -13,12 +13,12 @@ def start_game(window, gameMode):
     print(gameMode)
     board = Board.Board()
     current_player = PLAYER_WHITE
-    selected = [0,4]
+    selected = [0,0]
+    highlighted = []
 
     @window.event
     def on_draw():
         window.clear()
-        # print(f"Selected: {selected}")
         for x in range(8):
             for y in range(8):
                 if y%2 == x%2:
@@ -34,3 +34,5 @@ def start_game(window, gameMode):
         nonlocal selected
         board.printPos(x//SQUARE_SIZE, y//SQUARE_SIZE)
         selected = [x//SQUARE_SIZE, y//SQUARE_SIZE]
+        highlighted = board.possibleMoves(selected[0], selected[1], current_player)
+        print(highlighted)
