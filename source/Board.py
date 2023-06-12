@@ -1,7 +1,7 @@
 # imports
 from Piece import Piece
 import pyglet
-from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT, SELECT
+from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
     """
@@ -33,17 +33,9 @@ class Board:
 
     board(array): 2D array representing all positions on the board
     """
-    positions = start_boardstate()
+    def __init__(self) -> None:
+        self.positions = start_boardstate()
 
-    def drawSelected(self, x:int, y:int):
-        """
-        Highlight a given square, indicating selected square
-
-        Args:
-            x (int): X coordinate, 0-7
-            y (int): Y coordinate, 0-7
-        """
-        pyglet.shapes.Rectangle(x=x*SQUARE_SIZE, y=y*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=SELECT).draw()
 
     def drawPiece(self, x:int, y:int):
         """
@@ -68,6 +60,31 @@ class Board:
                                  y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  radius=SQUARE_SIZE//3, color=WHITE).draw()
 
+
+    def draw(self):
+        """
+        Draw the background and contents of the board
+        """
+        for x in range(8):
+            for y in range(8):
+                if y%2 == x%2:
+                    pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, BROWN).draw()
+                else:
+                    pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
+                self.drawPiece(x, y)
+
+
+    def drawSelected(self, x:int, y:int):
+        """
+        Highlight a given square, indicating selected square
+
+        Args:
+            x (int): X coordinate, 0-7
+            y (int): Y coordinate, 0-7
+        """
+        pyglet.shapes.Rectangle(x=x*SQUARE_SIZE, y=y*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=SELECT).draw()
+
+
     def printPos(self, x:int, y:int):
         """
         Print the contents of a square in the cli
@@ -91,6 +108,7 @@ class Board:
                 print("White king", x, y)
             else:
                 print("Black king", x, y)
+
 
     def getPieces(self, player:str):
         """
@@ -124,7 +142,8 @@ class Board:
             
 
     def possibleMoves(self, x:int, y:int, player:str):
-        #TODO: fill in the king moves and the multi-captures(recursion) (use recursion for multi-captures)
+        #TODO: fill in the king moves and the multi-captures(recursion)
+        #TODO: make sure piece 1 cant move when piece 2 can capture
         current_piece = self.positions[y][x]
         moves = []
         captures = []
@@ -180,10 +199,12 @@ class Board:
         
         else:
             pass
-
+        
+        # you have to capture if you can
         if len(captures) != 0:
             return captures
         return moves
+
 
     def showHighlights(self, selected:list, player:str):
         """
@@ -201,6 +222,7 @@ class Board:
                                     height=SQUARE_SIZE, 
                                     color=HIGHLIGHT).draw()
             
+
     def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
         """
         Make a move (capture or normal move)
