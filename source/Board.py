@@ -156,10 +156,10 @@ class Board:
                 if (self.withinBoard(x+1, y-1) and self.positions[y-1][x+1] == None):
                     moves.append([x+1, y-1])
                 # (multi)capture left-down
-                if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_BLACK and self.positions[y-2][x-2] == None):
+                if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_WHITE and self.positions[y-2][x-2] == None):
                     captures.append([x-2, y-2])
                 # (multi)capture right-down
-                if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_BLACK and self.positions[y-2][x+2] == None):
+                if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_WHITE and self.positions[y-2][x+2] == None):
                     captures.append([x+2, y-2])
 
         # king moves   
@@ -183,4 +183,25 @@ class Board:
         """
         positions = self.possibleMoves(selected[0], selected[1], player)
         for pos in positions:
-            pyglet.shapes.Rectangle(x=pos[0]*SQUARE_SIZE, y=pos[1]*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=HIGHLIGHT).draw()
+            pyglet.shapes.Rectangle(x=pos[0]*SQUARE_SIZE, 
+                                    y=pos[1]*SQUARE_SIZE, 
+                                    width=SQUARE_SIZE, 
+                                    height=SQUARE_SIZE, 
+                                    color=HIGHLIGHT).draw()
+            
+    def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
+        """
+        Make a move (capture or normal move)
+
+        Args:
+            xOld (int): Old x position
+            yOld (int): Old y position
+            xNew (int): New x position
+            yNew (int): New y position
+        """
+        self.positions[yNew][xNew] = self.positions[yOld][xOld]
+        self.positions[yOld][xOld] = None
+        
+        # single capture
+        if abs(xOld-xNew) == 2:
+            self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None

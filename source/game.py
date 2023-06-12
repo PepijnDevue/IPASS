@@ -31,8 +31,24 @@ def start_game(window, gameMode):
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
-        nonlocal selected
-        board.printPos(x//SQUARE_SIZE, y//SQUARE_SIZE)
-        selected = [x//SQUARE_SIZE, y//SQUARE_SIZE]
-        highlighted = board.possibleMoves(selected[0], selected[1], current_player)
-        print(highlighted)
+        nonlocal selected, highlighted, current_player
+        x = x//SQUARE_SIZE
+        y = y//SQUARE_SIZE
+        if [x,y] in highlighted:
+            # make the move
+            board.move(selected[0], selected[1], x, y)
+
+            # prepare next turn
+            highlighted = []
+            if current_player == PLAYER_WHITE:
+                current_player = PLAYER_BLACK
+                selected = [0, 7]
+            else:
+                current_player = PLAYER_WHITE
+                selected = [7, 0]
+        else:
+            # select
+            board.printPos(x, y)
+            selected = [x, y]
+            highlighted = board.possibleMoves(selected[0], selected[1], current_player)
+        print(f"Player: {current_player}, Highlighted: {highlighted}")
