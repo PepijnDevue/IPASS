@@ -18,7 +18,7 @@ def start_game(window, gameMode):
     @window.event
     def on_draw():
         window.clear()
-        board.showHighlights(selected, current_player)
+        # print(f"Selected: {selected}")
         for x in range(8):
             for y in range(8):
                 if y%2 == x%2:
@@ -26,6 +26,8 @@ def start_game(window, gameMode):
                 else:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
                 board.drawPiece(x, y)
+        board.showHighlights(selected, current_player)
+        board.drawSelected(selected[0], selected[1])
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
