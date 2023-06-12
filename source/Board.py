@@ -148,6 +148,12 @@ class Board:
                 # (multi)capture right-up
                 if (self.withinBoard(x+2, y+2) and self.positions[y+1][x+1] != None and self.positions[y+1][x+1].player == PLAYER_BLACK and self.positions[y+2][x+2] == None):
                     captures.append([x+2, y+2])
+                # (multi)capture left-down
+                if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_BLACK and self.positions[y-2][x-2] == None):
+                    captures.append([x-2, y-2])
+                # (multi)capture right-down
+                if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_BLACK and self.positions[y-2][x+2] == None):
+                    captures.append([x+2, y-2])
             else:
                 # move left-down
                 if (self.withinBoard(x-1, y-1) and self.positions[y-1][x-1] == None):
@@ -155,6 +161,12 @@ class Board:
                 # move right-down
                 if (self.withinBoard(x+1, y-1) and self.positions[y-1][x+1] == None):
                     moves.append([x+1, y-1])
+                # (multi)capture left-up
+                if (self.withinBoard(x-2, y+2) and self.positions[y+1][x-1] != None and self.positions[y+1][x-1].player == PLAYER_WHITE and self.positions[y+2][x-2] == None):
+                    captures.append([x-2, y+2])
+                # (multi)capture right-up
+                if (self.withinBoard(x+2, y+2) and self.positions[y+1][x+1] != None and self.positions[y+1][x+1].player == PLAYER_WHITE and self.positions[y+2][x+2] == None):
+                    captures.append([x+2, y+2])
                 # (multi)capture left-down
                 if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_WHITE and self.positions[y-2][x-2] == None):
                     captures.append([x-2, y-2])
