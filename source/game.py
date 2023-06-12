@@ -12,14 +12,13 @@ def start_game(window, gameMode):
     """
     print(gameMode)
     board = Board.Board()
-    current = PLAYER_WHITE
-    selected = None
+    current_player = PLAYER_WHITE
+    selected = [0,4]
 
     @window.event
     def on_draw():
         window.clear()
-        # print("s",selected)
-        board.showHighlights(selected, board)
+        board.showHighlights(selected, current_player)
         for x in range(8):
             for y in range(8):
                 if y%2 == x%2:

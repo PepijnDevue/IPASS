@@ -1,7 +1,7 @@
 # imports
 from Piece import Piece
 import pyglet
-from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING
+from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT
 
 def start_boardstate():
     """
@@ -38,7 +38,17 @@ class Board:
     selected = ()
     highlighted = []
 
-    def drawPiece(self, x, y):
+    def drawHighlight(self, x:int, y:int):
+        """
+        Highlight a given square
+
+        Args:
+            x (int): X coordinate, 0-7
+            y (int): Y coordinate, 0-7
+        """
+        pyglet.shapes.Rectangle(x=x*SQUARE_SIZE, y=y*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=HIGHLIGHT)
+
+    def drawPiece(self, x:int, y:int):
         """
         Draw the contents of a square on the board
 
@@ -54,7 +64,7 @@ class Board:
         elif piece.player == PLAYER_WHITE:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, y=y*SQUARE_SIZE+SQUARE_SIZE//2, radius=SQUARE_SIZE//3, color=WHITE).draw()
 
-    def printPos(self, x, y):
+    def printPos(self, x:int, y:int):
         """
         Print the contents of a square in the cli
 
@@ -76,8 +86,47 @@ class Board:
             else:
                 print("Black king", x, y)
 
-    def showHighlights(self, selected, board):
-        if(selected == None or board.positions[selected[1]][selected[0]] == None):
-            print("None")
+    def getPieces(self, player:str):
+        """
+        Get all positions of the pieces of a player
+
+        Args:
+            player (str): Either "B" for black or "W" for white
+
+        Returns:
+            list[list]: The list of position
+        """
+        positions = []
+        for x in range(8):
+            for y in range(8):
+                if(self.positions[y][x] != None and self.positions[y][x].player == player):
+                    positions.append((x, y))
+        return positions
+
+    def possibleMoves(self, x:int, y:int, player:str):
+        #TODO: fill in the passes (use recursion for multi-captures)
+        current = self.positions[y][x]
+        positions = []
+        if(current == None):
+            return self.getPieces(player)
+        elif(current.type == PIECE):
+            if current.player == WHITE:
+                pass
+            else:
+                pass
+        elif(current.player == WHITE):
+            pass
         else:
-            print("Not None")
+            pass
+
+    def showHighlights(self, selected:list, player:str):
+        """
+        TODO: write this
+
+        Args:
+            selected (list): _description_
+            player (str): _description_
+        """
+        positions = self.possibleMoves(selected[0], selected[1], player)
+        for pos in positions:
+            self.drawHighlight(pos[0], pos[1])
