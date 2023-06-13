@@ -36,6 +36,7 @@ class Board:
     """
     def __init__(self) -> None:
         self.positions = start_boardstate()
+        #TODO: bug, cant capture more than 2 times at once
         self.mandatoryMove = None
 
 
