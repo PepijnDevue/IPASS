@@ -291,6 +291,23 @@ class Board:
         return selected, [],  current_player, playing  
 
 
+    def selectNew(self, x:int, y:int, current_player:str):
+        """
+        Select a new square
+
+        Args:
+            x (int): The x position of the newly selected square
+            y (int): The y position of the newly selected square
+            current_player (str): The current player
+
+        Returns:
+            list: The x and y position of the newly selected square
+            list: The positions of the newly highlighted squares
+        """
+        selected = [x, y]
+        highlighted = self.possibleMoves(x, y, current_player)
+        return selected, highlighted
+
     def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
         """
         Make a move (capture or normal move)

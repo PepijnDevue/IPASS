@@ -49,9 +49,7 @@ def start_game(window, gameMode):
                 selected, highlighted, current_player, playing = board.handleTurn(x, y, selected, current_player)
             else:
                 # select a square
-                board.printPos(x, y)
-                selected = [x, y]
-                highlighted = board.possibleMoves(selected[0], selected[1], current_player)
+                selected, highlighted = board.selectNew(x, y, current_player)
         else:
             print(f"{current_player} lost")
             window.clear()
