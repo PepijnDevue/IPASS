@@ -141,16 +141,15 @@ class Board:
         return (x > -1 and x < 8 and y > -1 and y < 8)
             
 
-    def possibleMoves(self, x:int, y:int, player:str):
+    def getMoves(self, x:int, y:int, player:str):
         #TODO: fill in the king moves and the multi-captures(recursion)
-        #TODO: make sure piece 1 cant move when piece 2 can capture
         current_piece = self.positions[y][x]
         moves = []
         captures = []
 
         # None selected, movable pieces
         if(current_piece == None or current_piece.player != player):
-            return moves
+            return moves, False
         
         # piece moves
         elif(current_piece.type == PIECE):
@@ -202,9 +201,40 @@ class Board:
         
         # you have to capture if you can
         if len(captures) != 0:
-            return captures
-        return moves
+            return captures, True
+        return moves, False
+    
+    
+    def possibleMoves(self, x:int, y:int, player:str):
+        """
+        Get all possible/legal moves a piece can make
+        Will only return the capturing moves if the piece can capture
+        Will return nothing if the piece cant capture but another piece can
 
+        Args:
+            x (int): The x coordinate of the piece
+            y (int): The y coordinate of the piece
+            player (str): The current player
+
+        Returns:
+            list: The x and y coordinates of all moves the player can make
+        """
+        moves, capturing = self.getMoves(x, y, player)
+
+        # you have to capture if you can
+        if capturing:
+            return moves
+        
+        # you cant move piece a when you can capture piece b
+        canMove = True
+        for piece in self.getPieces(player):
+            if piece != [x, y] and self.getMoves(piece[0], piece[1], player)[1] == True:
+                canMove = False
+        if canMove:
+            return moves
+        else:
+            return []
+        
 
     def showHighlights(self, selected:list, player:str):
         """
