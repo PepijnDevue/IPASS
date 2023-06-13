@@ -46,6 +46,7 @@ def start_game(window, gameMode):
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
             if [x,y] in highlighted:
+                # make a move
                 selected, highlighted, current_player, playing = board.handleTurn(x, y, selected, current_player)
             else:
                 # select a square

@@ -272,23 +272,41 @@ class Board:
         # make the move
         self.move(selected[0], selected[1], x, y)
 
+        # let the player capture again if multi-capture is possible
+        # BEWARE, capturing player has the option to capture with another piece instead, should NOT be possible
+        nextMove = self.possibleMoves(x, y, current_player)
+        if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
+            nextTurn = False
+        else:
+            nextTurn = True
+
         # prepare next turn
+        highlighted = []
         playing = True
         if current_player == PLAYER_WHITE:
             # check if white has won
             if len(self.getPieces(PLAYER_BLACK)) == 0:
                 playing = False
 
-            current_player = PLAYER_BLACK
-            selected = [0, 7]
+            if nextTurn:
+                current_player = PLAYER_BLACK
+                selected = [0, 7]
+            else:
+                selected = [x, y]
+                highlighted = self.possibleMoves(x, y, current_player)
         else:
             # check if black has won
             if len(self.getPieces(PLAYER_WHITE)) == 0:
                 playing = False
-            current_player = PLAYER_WHITE
-            selected = [7, 0]
 
-        return selected, [],  current_player, playing  
+            if nextTurn:
+                current_player = PLAYER_WHITE
+                selected = [7, 0]
+            else:
+                selected = [x, y]
+                highlighted = self.possibleMoves(x, y, current_player)
+
+        return selected, highlighted,  current_player, playing  
 
 
     def selectNew(self, x:int, y:int, current_player:str):
