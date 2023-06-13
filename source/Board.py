@@ -35,6 +35,7 @@ class Board:
     """
     def __init__(self) -> None:
         self.positions = start_boardstate()
+        self.mandatoryMove = None
 
 
     def drawPiece(self, x:int, y:int):
@@ -147,8 +148,12 @@ class Board:
         moves = []
         captures = []
 
-        # None selected, movable pieces
+        # None selected or opposite player's piece selected
         if(current_piece == None or current_piece.player != player):
+            return moves, False
+        
+        # In the middle of a multi-capture and this piece is not the capturing piece
+        elif(self.mandatoryMove != None and self.mandatoryMove != [x, y]):
             return moves, False
         
         # piece moves
@@ -291,9 +296,11 @@ class Board:
             if nextTurn:
                 current_player = PLAYER_BLACK
                 selected = [0, 7]
+                self.mandatoryMove = None
             else:
                 selected = [x, y]
                 highlighted = self.possibleMoves(x, y, current_player)
+                self.mandatoryMove = [x, y]
         else:
             # check if black has won
             if len(self.getPieces(PLAYER_WHITE)) == 0:
@@ -302,9 +309,11 @@ class Board:
             if nextTurn:
                 current_player = PLAYER_WHITE
                 selected = [7, 0]
+                self.mandatoryMove = None
             else:
                 selected = [x, y]
                 highlighted = self.possibleMoves(x, y, current_player)
+                self.mandatoryMove = [x, y]
 
         return selected, highlighted,  current_player, playing  
 
