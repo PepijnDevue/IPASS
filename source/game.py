@@ -46,30 +46,12 @@ def start_game(window, gameMode):
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
             if [x,y] in highlighted:
-                # make the move
-                board.move(selected[0], selected[1], x, y)
-
-                # prepare next turn
-                highlighted = []
-                if current_player == PLAYER_WHITE:
-                    # check if white has won
-                    if len(board.getPieces(PLAYER_BLACK)) == 0:
-                        playing = False
-
-                    current_player = PLAYER_BLACK
-                    selected = [0, 7]
-                else:
-                    # check if black has won
-                    if len(board.getPieces(PLAYER_WHITE)) == 0:
-                        playing = False
-                    current_player = PLAYER_WHITE
-                    selected = [7, 0]
+                selected, highlighted, current_player, playing = board.handleTurn(x, y, selected, current_player)
             else:
                 # select a square
                 board.printPos(x, y)
                 selected = [x, y]
                 highlighted = board.possibleMoves(selected[0], selected[1], current_player)
-            print(f"Player: {current_player}, Highlighted: {highlighted}")
         else:
             print(f"{current_player} lost")
             window.clear()

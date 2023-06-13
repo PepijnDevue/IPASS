@@ -204,7 +204,7 @@ class Board:
             return captures, True
         return moves, False
     
-    
+
     def possibleMoves(self, x:int, y:int, player:str):
         """
         Get all possible/legal moves a piece can make
@@ -252,6 +252,44 @@ class Board:
                                     height=SQUARE_SIZE, 
                                     color=HIGHLIGHT).draw()
             
+
+    def handleTurn(self, x:int, y:int, selected:list, current_player:str):
+        """
+        Handle a turn being played, could be a move, a capture or a multi-capture
+
+        Args:
+            x (int): The x position of the target square
+            y (int): The y position of the target square
+            selected (list): The x and y coordinates of the moving piece
+            current_player (str): The current player
+
+        Returns:
+            list: The new selected square
+            list: Empty list representing the highlighted squares
+            str: The next player
+            bool: Whether or not the game is still going
+        """
+        # make the move
+        self.move(selected[0], selected[1], x, y)
+
+        # prepare next turn
+        playing = True
+        if current_player == PLAYER_WHITE:
+            # check if white has won
+            if len(self.getPieces(PLAYER_BLACK)) == 0:
+                playing = False
+
+            current_player = PLAYER_BLACK
+            selected = [0, 7]
+        else:
+            # check if black has won
+            if len(self.getPieces(PLAYER_WHITE)) == 0:
+                playing = False
+            current_player = PLAYER_WHITE
+            selected = [7, 0]
+
+        return selected, [],  current_player, playing  
+
 
     def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
         """
