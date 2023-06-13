@@ -6,7 +6,7 @@ from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE
 
 def start_game(window, gameMode):
     """
-    Initiate all necessary components for the gameloop
+    Initiate all necessary components for the game loop
 
     Args:
         window (Pyglet.window): The window object to display the board

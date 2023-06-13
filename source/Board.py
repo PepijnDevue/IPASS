@@ -31,7 +31,8 @@ class Board:
     """
     A board represents a game state at any given time
 
-    board(array): 2D array representing all positions on the board
+    positions(list): 2D list representing all positions on the board
+    mandatoryMove(None/list): If a player is capturing multiple pieces in one turn, this variable will contain the position of the piece that is multi-capturing
     """
     def __init__(self) -> None:
         self.positions = start_boardstate()
@@ -143,7 +144,20 @@ class Board:
             
 
     def getMoves(self, x:int, y:int, player:str):
-        #TODO: fill in the king moves and the multi-captures(recursion)
+        """
+        Get all legal moves a piece can make and tell if the piece can capture or not
+
+        Args:
+            x (int): The x position of the piece
+            y (int): The y position fo the piece
+            player (str): The current player
+
+        Returns:
+            list: A list of coordinates the piece can move to
+            bool: True if the piece is capturing
+        """
+
+        #TODO: fill in the king moves and its multi-captures
         current_piece = self.positions[y][x]
         moves = []
         captures = []
@@ -230,11 +244,13 @@ class Board:
         if capturing:
             return moves
         
-        # you cant move piece a when you can capture piece b
+        # you cant move piece A when you can capture with piece B
         canMove = True
         for piece in self.getPieces(player):
+            
             if piece != [x, y] and self.getMoves(piece[0], piece[1], player)[1] == True:
                 canMove = False
+
         if canMove:
             return moves
         else:
@@ -278,7 +294,6 @@ class Board:
         self.move(selected[0], selected[1], x, y)
 
         # let the player capture again if multi-capture is possible
-        # BEWARE, capturing player has the option to capture with another piece instead, should NOT be possible
         nextMove = self.possibleMoves(x, y, current_player)
         if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
             nextTurn = False
@@ -293,6 +308,7 @@ class Board:
             if len(self.getPieces(PLAYER_BLACK)) == 0:
                 playing = False
 
+            # finish the turn if no multi-capture is possible
             if nextTurn:
                 current_player = PLAYER_BLACK
                 selected = [0, 7]
@@ -306,6 +322,7 @@ class Board:
             if len(self.getPieces(PLAYER_WHITE)) == 0:
                 playing = False
 
+            # finish the turn if no multi-capture is possible
             if nextTurn:
                 current_player = PLAYER_WHITE
                 selected = [7, 0]
@@ -348,6 +365,6 @@ class Board:
         self.positions[yNew][xNew] = self.positions[yOld][xOld]
         self.positions[yOld][xOld] = None
         
-        # single capture
+        # piece capture
         if abs(xOld-xNew) == 2:
             self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
