@@ -353,36 +353,38 @@ class Board:
             str: The next player, always PLAYER_WHITE
             bool: Whether or not the game has ended
         """
-        # TODO: make sure bot can do multi-captures
-
         bestScore = np.inf
-        bestPiece = []
-        bestMove = []
+        bestPositions = None
 
         # get best move according to minimax
         for piece in self.getPieces(PLAYER_BLACK):
             for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK):
+
+                # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
                 tempBoard.move(piece[0], piece[1], move[0], move[1])
-                score = tempBoard.minimax()
+
+                # let the bot capture again if multi-capture is possible
+                while True:
+                    nextMoves = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+                        # TODO: find a way to implement minimax here
+                        nextMove = nextMoves[0]
+                        tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
+                        piece = move
+                        move = nextMove
+                    else:
+                        break
+                
+                # get the score of the move
+                score = tempBoard.minimax(0)
+
+                # if this is the best move yet, remember it
                 if score < bestScore:
                     bestScore = score
-                    bestPiece = piece
-                    bestMove = move
+                    bestPositions = tempBoard.positions
 
-        # make the move
-        self.move(bestPiece[0], bestPiece[1], bestMove[0], bestMove[1])
-
-        # let the bot capture again if multi-capture is possible
-        while True:
-            nextMoves = self.possibleMoves(bestMove[0], bestMove[1], PLAYER_BLACK)
-            if abs(bestPiece[0] - bestMove[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - bestMove[0]) == 2:
-                nextMove = random.choice(nextMoves)
-                self.move(bestMove[0], bestMove[1], nextMove[0], nextMove[1])
-                bestPiece = bestMove
-                bestMove = nextMove
-            else:
-                break
+        self.positions = bestPositions
 
         # check if black has won
         playing = True
@@ -393,6 +395,7 @@ class Board:
     
 
     def minimax(self, depth):
+        # TODO: fill
         return self.estimateScore()
 
 
