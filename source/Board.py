@@ -241,7 +241,6 @@ class Board:
             list: The x and y coordinates of all moves the player can make
         """
         moves, capturing = self.getMoves(x, y, player)
-
         # you have to capture if you can
         if capturing:
             return moves
@@ -249,7 +248,6 @@ class Board:
         # you cant move piece A when you can capture with piece B
         canMove = True
         for piece in self.getPieces(player):
-            
             if piece != [x, y] and self.getMoves(piece[0], piece[1], player)[1] == True:
                 canMove = False
 
@@ -307,8 +305,11 @@ class Board:
         playing = True
         if current_player == PLAYER_WHITE:
             # check if white has won
+            tempMandatoryMove = self.mandatoryMove
+            self.mandatoryMove = None
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 playing = False
+            self.mandatoryMove = tempMandatoryMove
 
             # finish the turn if no multi-capture is possible
             if nextTurn:
@@ -321,8 +322,11 @@ class Board:
                 self.mandatoryMove = [x, y]
         else:
             # check if black has won
+            tempMandatoryMove = self.mandatoryMove
+            self.mandatoryMove = None
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 playing = False
+            self.mandatoryMove = tempMandatoryMove
 
             # finish the turn if no multi-capture is possible
             if nextTurn:

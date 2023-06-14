@@ -40,7 +40,6 @@ def start_game(window, gameMode):
             modifiers (pyglet.window.mouse): Pyglet object
         """
         nonlocal selected, highlighted, current_player, playing, board
-
         if playing:
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
