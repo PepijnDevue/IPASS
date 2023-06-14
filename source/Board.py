@@ -2,6 +2,8 @@
 from Piece import Piece
 import pyglet
 import random
+import numpy as np
+import copy
 from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
@@ -351,29 +353,34 @@ class Board:
             str: The next player, always PLAYER_WHITE
             bool: Whether or not the game has ended
         """
-        # TODO: loop through possible moves with depth 0
-        # TODO: call self.minimax(depth) which returns the cost
-        # get a random move
-        pieces = self.getPieces(PLAYER_BLACK)
-        random.shuffle(pieces)
-        while True:
-            piece = pieces.pop()
-            moves = self.possibleMoves(piece[0], piece[1], PLAYER_BLACK)
-            if len(moves) > 0:
-                break
-        move = random.choice(moves)
+        # TODO: make sure bot can do multi-captures
+
+        bestScore = np.inf
+        bestPiece = []
+        bestMove = []
+
+        # get best move according to minimax
+        for piece in self.getPieces(PLAYER_BLACK):
+            for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK):
+                tempBoard = copy.deepcopy(self)
+                tempBoard.move(piece[0], piece[1], move[0], move[1])
+                score = tempBoard.minimax()
+                if score < bestScore:
+                    bestScore = score
+                    bestPiece = piece
+                    bestMove = move
 
         # make the move
-        self.move(piece[0], piece[1], move[0], move[1])
+        self.move(bestPiece[0], bestPiece[1], bestMove[0], bestMove[1])
 
         # let the bot capture again if multi-capture is possible
         while True:
-            nextMoves = self.possibleMoves(move[0], move[1], PLAYER_BLACK)
-            if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+            nextMoves = self.possibleMoves(bestMove[0], bestMove[1], PLAYER_BLACK)
+            if abs(bestPiece[0] - bestMove[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - bestMove[0]) == 2:
                 nextMove = random.choice(nextMoves)
-                self.move(move[0], move[1], nextMove[0], nextMove[1])
-                piece = move
-                move = nextMove
+                self.move(bestMove[0], bestMove[1], nextMove[0], nextMove[1])
+                bestPiece = bestMove
+                bestMove = nextMove
             else:
                 break
 
@@ -383,6 +390,11 @@ class Board:
                 playing = False
 
         return [7,0], [], PLAYER_WHITE, playing
+    
+
+    def minimax(self, depth):
+        return self.estimateScore()
+
 
     def numPossibleMoves(self, player:str):
         """
@@ -399,6 +411,7 @@ class Board:
         for piece in pieces:
             total += len(self.possibleMoves(piece[0], piece[1], player))
         return total
+
 
     def selectNew(self, x:int, y:int, current_player:str):
         """
