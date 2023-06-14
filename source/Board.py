@@ -307,7 +307,7 @@ class Board:
         playing = True
         if current_player == PLAYER_WHITE:
             # check if white has won
-            if len(self.getPieces(PLAYER_BLACK)) == 0:
+            if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 playing = False
 
             # finish the turn if no multi-capture is possible
@@ -321,7 +321,7 @@ class Board:
                 self.mandatoryMove = [x, y]
         else:
             # check if black has won
-            if len(self.getPieces(PLAYER_WHITE)) == 0:
+            if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 playing = False
 
             # finish the turn if no multi-capture is possible
@@ -373,10 +373,26 @@ class Board:
 
         # check if black has won
         playing = True
-        if len(self.getPieces(PLAYER_WHITE)) == 0:
+        if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 playing = False
 
         return [7,0], [], PLAYER_WHITE, playing
+
+    def numPossibleMoves(self, player:str):
+        """
+        Get the amount of moves a player can make
+
+        Args:
+            player (str): The current player
+
+        Returns:
+            int: Amount of moves the player can make
+        """
+        pieces = self.getPieces(player)
+        total = 0
+        for piece in pieces:
+            total += len(self.possibleMoves(piece[0], piece[1], player))
+        return total
 
     def selectNew(self, x:int, y:int, current_player:str):
         """

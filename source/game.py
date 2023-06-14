@@ -48,7 +48,7 @@ def start_game(window, gameMode):
                 if [x,y] in highlighted:
                     # make a move
                     selected, highlighted, current_player, playing = board.handlePlayerTurn(x, y, selected, current_player)
-                    if gameMode == PVE and current_player == PLAYER_BLACK:
+                    if gameMode == PVE and current_player == PLAYER_BLACK and playing:
                         # bot move
                         selected, highlighted, current_player, playing = board.handleBotTurn()
                 else:
