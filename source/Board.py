@@ -1,6 +1,7 @@
 # imports
 from Piece import Piece
 import pyglet
+import random
 from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
@@ -275,7 +276,7 @@ class Board:
                                     color=HIGHLIGHT).draw()
             
 
-    def handleTurn(self, x:int, y:int, selected:list, current_player:str):
+    def handlePlayerTurn(self, x:int, y:int, selected:list, current_player:str):
         """
         Handle a turn being played, could be a move, a capture or a multi-capture
 
@@ -335,6 +336,47 @@ class Board:
 
         return selected, highlighted,  current_player, playing  
 
+    
+    def handleBotTurn(self):
+        """
+        Let the bot take a turn
+
+        Returns:
+            list: The position of the default selected square of the player
+            list: Empty list of highlighted square positions
+            str: The next player, always PLAYER_WHITE
+            bool: Whether or not the game has ended
+        """
+        # get a random move
+        pieces = self.getPieces(PLAYER_BLACK)
+        random.shuffle(pieces)
+        while True:
+            piece = pieces.pop()
+            moves = self.possibleMoves(piece[0], piece[1], PLAYER_BLACK)
+            if len(moves) > 0:
+                break
+        move = random.choice(moves)
+
+        # make the move
+        self.move(piece[0], piece[1], move[0], move[1])
+
+        # let the bot capture again if multi-capture is possible
+        while True:
+            nextMoves = self.possibleMoves(move[0], move[1], PLAYER_BLACK)
+            if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+                nextMove = random.choice(nextMoves)
+                self.move(move[0], move[1], nextMove[0], nextMove[1])
+                piece = move
+                move = nextMove
+            else:
+                break
+
+        # check if black has won
+        playing = True
+        if len(self.getPieces(PLAYER_WHITE)) == 0:
+                playing = False
+
+        return [7,0], [], PLAYER_WHITE, playing
 
     def selectNew(self, x:int, y:int, current_player:str):
         """

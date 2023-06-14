@@ -1,8 +1,7 @@
 # imports
 import Board
 import menu
-import pyglet
-from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE
+from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, PVP, PVE
 
 def start_game(window, gameMode):
     """
@@ -40,17 +39,21 @@ def start_game(window, gameMode):
             button (pyglet.window.mouse): Pyglet object
             modifiers (pyglet.window.mouse): Pyglet object
         """
-        nonlocal selected, highlighted, current_player, playing
+        nonlocal selected, highlighted, current_player, playing, board
 
         if playing:
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
-            if [x,y] in highlighted:
-                # make a move
-                selected, highlighted, current_player, playing = board.handleTurn(x, y, selected, current_player)
-            else:
-                # select a square
-                selected, highlighted = board.selectNew(x, y, current_player)
+            if gameMode == PVP or current_player == PLAYER_WHITE:
+                if [x,y] in highlighted:
+                    # make a move
+                    selected, highlighted, current_player, playing = board.handlePlayerTurn(x, y, selected, current_player)
+                    if gameMode == PVE and current_player == PLAYER_BLACK:
+                        # bot move
+                        selected, highlighted, current_player, playing = board.handleBotTurn()
+                else:
+                    # select a square
+                    selected, highlighted = board.selectNew(x, y, current_player)
         else:
             print(f"{current_player} lost")
             window.clear()
