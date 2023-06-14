@@ -351,6 +351,8 @@ class Board:
             str: The next player, always PLAYER_WHITE
             bool: Whether or not the game has ended
         """
+        # TODO: loop through possible moves with depth 0
+        # TODO: call self.minimax(depth) which returns the cost
         # get a random move
         pieces = self.getPieces(PLAYER_BLACK)
         random.shuffle(pieces)
@@ -431,3 +433,29 @@ class Board:
         # piece capture
         if abs(xOld-xNew) == 2:
             self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
+
+    
+    def estimateScore(self):
+        """
+        Estimate the score of a board state
+
+        Returns:
+            int: the score, positive = good for white, negative = good for black
+        """
+        score = 0
+        for x in range(8):
+            for y in range(8):
+                pos = self.positions[y][x]
+                if pos == None:
+                    pass
+                else:
+                    if pos.player == PLAYER_WHITE:
+                        multiplier = 1
+                    else:
+                        multiplier = -1
+                    if pos.type == PIECE:
+                        score += multiplier*1
+                    else:
+                        score += multiplier*2
+        return score
+
