@@ -4,7 +4,7 @@ import pyglet
 import numpy as np
 import copy
 import random
-from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
+from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
     """
@@ -363,6 +363,7 @@ class Board:
         bestScore = np.inf
         bestPositionsList = []
 
+        print("----------------------------")
         # get best move according to minimax
         for piece in self.getPieces(PLAYER_BLACK):
             for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK):
@@ -394,6 +395,7 @@ class Board:
                 elif score == bestScore:
                     bestPositionsList.append(tempBoard.positions)
 
+        print("-------------------", bestScore, "----------------------------")
         self.positions = random.choice(bestPositionsList)
 
         # check if black has won
@@ -414,7 +416,7 @@ class Board:
         Returns:
             int: The score of the boardstate
         """
-        #TODO: Verify it works
+        #TODO: Verify it works (I think its not optimal due to the absence of minimax in multi-captures)
         #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster)
         if depth % 2 == 0:
             # maximizing
@@ -515,10 +517,25 @@ class Board:
         self.positions[yNew][xNew] = self.positions[yOld][xOld]
         self.positions[yOld][xOld] = None
         
-        # piece capture
-        if abs(xOld-xNew) == 2:
-            self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
+        if self.positions[yNew][xNew].type == PIECE:
 
+            # piece capture
+            if abs(xOld-xNew) == 2:
+                self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
+        
+        else:
+            #TODO: test this
+            # king capture
+            dirX = 1 if (xNew-xOld)>0 else 1
+            dirY = 1 if (yNew-yOld)>0 else 1
+            while(xOld+dirX!=xNew):
+                xOld += dirX
+                yOld += dirY
+                self.positions[yOld][xOld] = None
+
+        # transform to king
+        if (yNew == 7 and self.positions[yNew][xNew].player == PLAYER_WHITE) or (yNew == 0 and self.positions[yNew][xNew].player == PLAYER_BLACK):
+            self.positions[yNew][xNew].type = KING
     
     def estimateScore(self):
         """
