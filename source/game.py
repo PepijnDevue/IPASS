@@ -3,16 +3,17 @@ import Board
 import menu
 from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, PVP, PVE
 
-def start_game(window, gameMode):
+def start_game(window, gameMode, maxDepth):
     """
     Initiate all necessary components for the game loop
 
     Args:
         window (Pyglet.window): The window object to display the board
         gameMode (string): The current game mode (PVE or PVP)
+        maxDepth (int): The max ply for minimax
     """
     print(gameMode)
-    board = Board.Board()
+    board = Board.Board(maxDepth)
     current_player = PLAYER_WHITE
     playing = True
     selected = [0,0]

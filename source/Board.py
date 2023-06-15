@@ -1,7 +1,6 @@
 # imports
 from Piece import Piece
 import pyglet
-import random
 import numpy as np
 import copy
 from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
@@ -37,10 +36,17 @@ class Board:
     positions(list): 2D list representing all positions on the board
     mandatoryMove(None/list): If a player is capturing multiple pieces in one turn, this variable will contain the position of the piece that is multi-capturing
     """
-    def __init__(self) -> None:
+    def __init__(self, maxDepth) -> None:
+        """
+        Initiate a board object
+
+        Args:
+            maxDepth (int): The max ply for minimax
+        """
         self.positions = start_boardstate()
-        #TODO: bug, cant capture more than 2 times at once
+        #TODO: bug, player cant capture more than 2 times at once
         self.mandatoryMove = None
+        self.maxDepth = maxDepth
 
 
     def drawPiece(self, x:int, y:int):
@@ -395,8 +401,59 @@ class Board:
     
 
     def minimax(self, depth):
-        # TODO: fill
-        return self.estimateScore()
+        if depth % 2 == 0:
+            # maximizing
+            # current boardstate(self) is directly after black has moved
+            lastPlayer = PLAYER_BLACK
+            movingPlayer = PLAYER_WHITE
+            bestScore = -np.inf
+            if self.numPossibleMoves(PLAYER_WHITE) == 0:
+                # Black wins
+                return -100
+        else:
+            # minimizing
+            # current boardstate(self) is directly after black has moved
+            lastPlayer = PLAYER_WHITE
+            movingPlayer = PLAYER_BLACK
+            bestScore = np.inf
+            if self.numPossibleMoves(PLAYER_BLACK) == 0:
+                return 100
+            
+        if depth == self.maxDepth:
+            # Recursion depth found
+            return self.estimateScore()
+
+        for piece in self.getPieces(movingPlayer):
+            for move in self.possibleMoves(piece[0], piece[1], movingPlayer):
+
+
+                # create copy of the board to simulate turns
+                tempBoard = copy.deepcopy(self)
+                tempBoard.move(piece[0], piece[1], move[0], move[1])
+
+                # let the bot capture again if multi-capture is possible
+                while True:
+                    nextMoves = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+                        # TODO: find a way to implement minimax here
+                        nextMove = nextMoves[0]
+                        tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
+                        piece = move
+                        move = nextMove
+                    else:
+                        break
+                
+                # get the score of the move
+                score = tempBoard.minimax(depth+1)
+
+                if depth % 2 == 0:
+                    if score > bestScore:
+                        bestScore = score
+                else:
+                    if score < bestScore:
+                        bestScore = score
+
+        return bestScore
 
 
     def numPossibleMoves(self, player:str):
