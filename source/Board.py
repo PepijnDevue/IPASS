@@ -3,6 +3,7 @@ from Piece import Piece
 import pyglet
 import numpy as np
 import copy
+import random
 from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
@@ -360,7 +361,7 @@ class Board:
             bool: Whether or not the game has ended
         """
         bestScore = np.inf
-        bestPositions = None
+        bestPositionsList = []
 
         # get best move according to minimax
         for piece in self.getPieces(PLAYER_BLACK):
@@ -384,13 +385,16 @@ class Board:
                 
                 # get the score of the move
                 score = tempBoard.minimax(0)
+                print(score)
 
                 # if this is the best move yet, remember it
                 if score < bestScore:
                     bestScore = score
-                    bestPositions = tempBoard.positions
+                    bestPositionsList = [tempBoard.positions,]
+                elif score == bestScore:
+                    bestPositionsList.append(tempBoard.positions)
 
-        self.positions = bestPositions
+        self.positions = random.choice(bestPositionsList)
 
         # check if black has won
         playing = True
@@ -401,10 +405,20 @@ class Board:
     
 
     def minimax(self, depth):
+        """
+        Use recursion to find out what the score of a boardstate is
+
+        Args:
+            depth (int): The current search-depth
+
+        Returns:
+            int: The score of the boardstate
+        """
+        #TODO: Verify it works
+        #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster)
         if depth % 2 == 0:
             # maximizing
             # current boardstate(self) is directly after black has moved
-            lastPlayer = PLAYER_BLACK
             movingPlayer = PLAYER_WHITE
             bestScore = -np.inf
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
@@ -413,7 +427,6 @@ class Board:
         else:
             # minimizing
             # current boardstate(self) is directly after black has moved
-            lastPlayer = PLAYER_WHITE
             movingPlayer = PLAYER_BLACK
             bestScore = np.inf
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
@@ -426,7 +439,6 @@ class Board:
         for piece in self.getPieces(movingPlayer):
             for move in self.possibleMoves(piece[0], piece[1], movingPlayer):
 
-
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
                 tempBoard.move(piece[0], piece[1], move[0], move[1])
@@ -435,7 +447,7 @@ class Board:
                 while True:
                     nextMoves = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
                     if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
-                        # TODO: find a way to implement minimax here
+                        # TODO: find a way to implement minimax here (Choose 3capture over 2capture/create separate branch for each nextMove)
                         nextMove = nextMoves[0]
                         tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
                         piece = move
@@ -515,6 +527,7 @@ class Board:
         Returns:
             int: the score, positive = good for white, negative = good for black
         """
+        # TODO: Improve? Only when kings and multi-captures are implemented well
         score = 0
         for x in range(8):
             for y in range(8):
