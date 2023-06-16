@@ -45,7 +45,6 @@ class Board:
             maxDepth (int): The max ply for minimax
         """
         self.positions = start_boardstate()
-        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving? Fixed?
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
