@@ -505,14 +505,10 @@ class Board:
                         # TODO: find a way to implement minimax here
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
-                        piece = move
                         move = nextMove
                     else:
                         break
-
-                #TODO: Lees deze whileloop, print de target coordinaten en test
                 
-                print("s", -1, piece, )
                 # get the score of the move
                 score = tempBoard.minimax(0)
 
@@ -545,6 +541,10 @@ class Board:
         """
         #TODO: Verify it works (I think its not optimal due to the absence of minimax in multi-captures)
         #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
+        if depth == self.maxDepth:
+            # Recursion depth found
+            return self.estimateScore()
+        
         if depth % 2 == 0:
             # maximizing
             # current boardstate(self) is directly after black has moved
@@ -559,29 +559,22 @@ class Board:
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 return 100
             movingPlayer = PLAYER_BLACK
-            bestScore = np.inf
-            
-        if depth == self.maxDepth:
-            # Recursion depth found
-            return self.estimateScore()
+            bestScore = np.inf    
 
         for piece in self.getPieces(movingPlayer):
             for move in self.possibleMoves(piece[0], piece[1], movingPlayer)[0]:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
-                print("dpm:", depth, piece, move)
                 captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    #NOTE: movingPlayer was PLAYER_BLACK first
                     nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], movingPlayer)
                     if captured and len(nextMoves) != 0 and capturing:
                         # TODO: find a way to implement minimax here (Choose 3capture over 2capture/create separate branch for each nextMove)
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
-                        piece = move
                         move = nextMove
                     else:
                         break
@@ -646,7 +639,6 @@ class Board:
         Return:
             bool: if the move was a capture
         """
-        print("m:", xOld, yOld, xNew, yNew)
         captured = False
 
         self.positions[yNew][xNew] = self.positions[yOld][xOld]
@@ -683,7 +675,6 @@ class Board:
         Returns:
             int: the score, positive = good for white, negative = good for black
         """
-        # TODO: Improve? Only when everything else is done
         score = 0
         for x in range(8):
             for y in range(8):
