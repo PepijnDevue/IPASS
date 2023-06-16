@@ -47,7 +47,6 @@ class Board:
         self.positions = start_boardstate()
         #TODO: bug: King sometimes fails to multi-capture
         #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving
-        #TODO: bug: when capturing more than 2 times at once, you have to select your piece again
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
@@ -428,7 +427,6 @@ class Board:
             str: The next player
             bool: Whether or not the game is still going
         """
-        #TODO: 3-capture impossibility has to do with not changing mandatoryMove
         # make the move
         self.move(selected[0], selected[1], x, y)
 
@@ -459,9 +457,8 @@ class Board:
                 selected = [0, 7]
                 self.mandatoryMove = None
             else:
-                selected = [x, y]
-                highlighted = self.possibleMoves(x, y, current_player)
                 self.mandatoryMove = [x, y]
+                selected, highlighted = self.selectNew(x, y, current_player)
         else:
             # check if black has won
             tempMandatoryMove = self.mandatoryMove
@@ -476,9 +473,8 @@ class Board:
                 selected = [7, 0]
                 self.mandatoryMove = None
             else:
-                selected = [x, y]
-                highlighted = self.possibleMoves(x, y, current_player)
                 self.mandatoryMove = [x, y]
+                selected, highlighted = self.selectNew(x, y, current_player)
 
         return selected, highlighted,  current_player, playing  
 
@@ -496,7 +492,6 @@ class Board:
         bestScore = np.inf
         bestPositionsList = []
 
-        print("----------------------------")
         # get best move according to minimax
         for piece in self.getPieces(PLAYER_BLACK):
             for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK):
@@ -519,7 +514,6 @@ class Board:
                 
                 # get the score of the move
                 score = tempBoard.minimax(0)
-                print(score)
 
                 # if this is the best move yet, remember it
                 if score < bestScore:
@@ -528,7 +522,6 @@ class Board:
                 elif score == bestScore:
                     bestPositionsList.append(tempBoard.positions)
 
-        print("-------------------", bestScore, "----------------------------")
         self.positions = random.choice(bestPositionsList)
 
         # check if black has won
