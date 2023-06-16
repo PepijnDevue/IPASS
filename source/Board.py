@@ -45,7 +45,6 @@ class Board:
             maxDepth (int): The max ply for minimax
         """
         self.positions = start_boardstate()
-        #TODO: bug: King sometimes fails to multi-capture
         #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving?
         self.mandatoryMove = None
         self.maxDepth = maxDepth
@@ -380,7 +379,7 @@ class Board:
         moves, capturing = self.getMoves(x, y, player)
         # you have to capture if you can
         if capturing:
-            return moves
+            return moves, True
         
         # you cant move piece A when you can capture with piece B
         canMove = True
@@ -389,9 +388,9 @@ class Board:
                 canMove = False
 
         if canMove:
-            return moves
+            return moves, False
         else:
-            return []
+            return [], False
         
 
     def showHighlights(self, selected:list, player:str):
@@ -402,7 +401,7 @@ class Board:
             selected (list): (x, y) coordinates of the selected square
             player (str): Either B or W
         """
-        positions = self.possibleMoves(selected[0], selected[1], player)
+        positions, capturing = self.possibleMoves(selected[0], selected[1], player)
         for pos in positions:
             pyglet.shapes.Rectangle(x=pos[0]*SQUARE_SIZE, 
                                     y=pos[1]*SQUARE_SIZE, 
@@ -428,23 +427,17 @@ class Board:
             bool: Whether or not the game is still going
         """
         # make the move
-        self.move(selected[0], selected[1], x, y)
+        captured = self.move(selected[0], selected[1], x, y)
 
         # let the player capture again if multi-capture is possible
-        if self.positions[y][x].type == PIECE:
-            tempMandatoryMove = self.mandatoryMove
-            self.mandatoryMove = None
-            nextMove = self.possibleMoves(x, y, current_player)
-            if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
-                nextTurn = False
-            else:
-                nextTurn = True
-            self.mandatoryMove = tempMandatoryMove
+        tempMandatoryMove = self.mandatoryMove
+        self.mandatoryMove = None
+        nextMove, capturing = self.possibleMoves(x, y, current_player)
+        if captured and len(nextMove) != 0 and capturing:
+            nextTurn = False
         else:
-            # TODO: fill (adapt possibleMoves so it tells whether or not a move is a capture)
-            # check if previous move was a capture
-            # check if a capture with the same piece is possible again
-            pass
+            nextTurn = True
+        self.mandatoryMove = tempMandatoryMove
 
         # prepare next turn
         highlighted = []
@@ -500,19 +493,19 @@ class Board:
 
         # get best move according to minimax
         for piece in self.getPieces(PLAYER_BLACK):
-            for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK):
+            for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK)[0]:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
-                tempBoard.move(piece[0], piece[1], move[0], move[1])
+                captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    nextMoves = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
-                    if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    if captured and len(nextMoves) != 0 and capturing:
                         # TODO: find a way to implement minimax here
                         nextMove = nextMoves[0]
-                        tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
+                        captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
                         piece = move
                         move = nextMove
                     else:
@@ -571,19 +564,19 @@ class Board:
             return self.estimateScore()
 
         for piece in self.getPieces(movingPlayer):
-            for move in self.possibleMoves(piece[0], piece[1], movingPlayer):
+            for move in self.possibleMoves(piece[0], piece[1], movingPlayer)[0]:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
-                tempBoard.move(piece[0], piece[1], move[0], move[1])
+                captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    nextMoves = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
-                    if abs(piece[0] - move[0]) == 2 and len(nextMoves) != 0 and abs(nextMoves[0][0] - move[0]) == 2:
+                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    if captured and len(nextMoves) != 0 and capturing:
                         # TODO: find a way to implement minimax here (Choose 3capture over 2capture/create separate branch for each nextMove)
                         nextMove = nextMoves[0]
-                        tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
+                        captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
                         piece = move
                         move = nextMove
                     else:
@@ -615,7 +608,7 @@ class Board:
         pieces = self.getPieces(player)
         total = 0
         for piece in pieces:
-            total += len(self.possibleMoves(piece[0], piece[1], player))
+            total += len(self.possibleMoves(piece[0], piece[1], player)[0])
         return total
 
 
@@ -633,7 +626,7 @@ class Board:
             list: The positions of the newly highlighted squares
         """
         selected = [x, y]
-        highlighted = self.possibleMoves(x, y, current_player)
+        highlighted, capturing = self.possibleMoves(x, y, current_player)
         return selected, highlighted
 
     def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
@@ -645,7 +638,12 @@ class Board:
             yOld (int): Old y position
             xNew (int): New x position
             yNew (int): New y position
+
+        Return:
+            bool: if the move was a capture
         """
+        captured = False
+
         self.positions[yNew][xNew] = self.positions[yOld][xOld]
         self.positions[yOld][xOld] = None
         
@@ -654,6 +652,7 @@ class Board:
             # piece capture
             if abs(xOld-xNew) == 2:
                 self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
+                captured = True
         
         else:
             # king capture
@@ -662,11 +661,15 @@ class Board:
             while(xOld+dirX!=xNew):
                 xOld += dirX
                 yOld += dirY
-                self.positions[yOld][xOld] = None
+                if self.positions[yOld][xOld] != None:
+                    captured = True
+                    self.positions[yOld][xOld] = None
 
         # transform to king
         if (yNew == 7 and self.positions[yNew][xNew].player == PLAYER_WHITE) or (yNew == 0 and self.positions[yNew][xNew].player == PLAYER_BLACK):
             self.positions[yNew][xNew].type = KING
+
+        return captured
     
     def estimateScore(self):
         """
