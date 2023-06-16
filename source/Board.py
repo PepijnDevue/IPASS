@@ -67,11 +67,25 @@ class Board:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  radius=SQUARE_SIZE//3, color=BLACK).draw()
+            if piece.type == KING:
+                pyglet.shapes.Star(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
+                                   y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
+                                   outer_radius=SQUARE_SIZE//4, 
+                                   inner_radius=SQUARE_SIZE//8, 
+                                   num_spikes=5, rotation=-90,
+                                   color=WHITE).draw()
             
         elif piece.player == PLAYER_WHITE:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2,
                                  y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  radius=SQUARE_SIZE//3, color=WHITE).draw()
+            if piece.type == KING:
+                pyglet.shapes.Star(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
+                                   y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
+                                   outer_radius=SQUARE_SIZE//4, 
+                                   inner_radius=SQUARE_SIZE//8, 
+                                   num_spikes=5, rotation=-90, 
+                                   color=BLACK).draw()
 
 
     def draw(self):
@@ -190,16 +204,16 @@ class Board:
                 # move right-up
                 if (self.withinBoard(x+1, y+1) and self.positions[y+1][x+1] == None):
                     moves.append([x+1, y+1])
-                # (multi)capture left-up
+                # capture left-up
                 if (self.withinBoard(x-2, y+2) and self.positions[y+1][x-1] != None and self.positions[y+1][x-1].player == PLAYER_BLACK and self.positions[y+2][x-2] == None):
                     captures.append([x-2, y+2])
-                # (multi)capture right-up
+                # capture right-up
                 if (self.withinBoard(x+2, y+2) and self.positions[y+1][x+1] != None and self.positions[y+1][x+1].player == PLAYER_BLACK and self.positions[y+2][x+2] == None):
                     captures.append([x+2, y+2])
-                # (multi)capture left-down
+                # capture left-down
                 if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_BLACK and self.positions[y-2][x-2] == None):
                     captures.append([x-2, y-2])
-                # (multi)capture right-down
+                # capture right-down
                 if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_BLACK and self.positions[y-2][x+2] == None):
                     captures.append([x+2, y-2])
             else:
@@ -209,25 +223,140 @@ class Board:
                 # move right-down
                 if (self.withinBoard(x+1, y-1) and self.positions[y-1][x+1] == None):
                     moves.append([x+1, y-1])
-                # (multi)capture left-up
+                # capture left-up
                 if (self.withinBoard(x-2, y+2) and self.positions[y+1][x-1] != None and self.positions[y+1][x-1].player == PLAYER_WHITE and self.positions[y+2][x-2] == None):
                     captures.append([x-2, y+2])
-                # (multi)capture right-up
+                # capture right-up
                 if (self.withinBoard(x+2, y+2) and self.positions[y+1][x+1] != None and self.positions[y+1][x+1].player == PLAYER_WHITE and self.positions[y+2][x+2] == None):
                     captures.append([x+2, y+2])
-                # (multi)capture left-down
+                # capture left-down
                 if (self.withinBoard(x-2, y-2) and self.positions[y-1][x-1] != None and self.positions[y-1][x-1].player == PLAYER_WHITE and self.positions[y-2][x-2] == None):
                     captures.append([x-2, y-2])
-                # (multi)capture right-down
+                # capture right-down
                 if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_WHITE and self.positions[y-2][x+2] == None):
                     captures.append([x+2, y-2])
 
-        # king moves   
-        elif(current_piece.player == PLAYER_WHITE):
-            pass
-        
         else:
-            pass
+            # king moves   
+            if(current_piece.player == PLAYER_WHITE):
+                opp = PLAYER_BLACK
+            else:
+                opp = PLAYER_WHITE
+            # move/capture left up
+            delta = 1
+            capturing = False
+
+            while True:
+                if self.withinBoard(x-delta, y+delta):
+
+                    pos = self.positions[y+delta][x-delta]
+                    if pos == None:
+
+                        if capturing:
+                            captures.append([x-delta, y+delta])
+                        else:
+                            moves.append([x-delta, y+delta])
+
+                    elif pos.player == opp:
+
+                        if capturing:
+                            break
+                        else:
+                            capturing = True
+
+                    else:
+                        break
+
+                else:
+                    break
+                delta += 1
+
+            # move/capture right up
+            delta = 1
+            capturing = False
+
+            while True:
+                if self.withinBoard(x+delta, y+delta):
+
+                    pos = self.positions[y+delta][x+delta]
+                    if pos == None:
+
+                        if capturing:
+                            captures.append([x+delta, y+delta])
+                        else:
+                            moves.append([x+delta, y+delta])
+
+                    elif pos.player == opp:
+
+                        if capturing:
+                            break
+                        else:
+                            capturing = True
+
+                    else:
+                        break
+                    
+                else:
+                    break
+                delta += 1
+
+            # move/capture left down
+            delta = 1
+            capturing = False
+
+            while True:
+                if self.withinBoard(x-delta, y-delta):
+
+                    pos = self.positions[y-delta][x-delta]
+                    if pos == None:
+
+                        if capturing:
+                            captures.append([x-delta, y-delta])
+                        else:
+                            moves.append([x-delta, y-delta])
+
+                    elif pos.player == opp:
+
+                        if capturing:
+                            break
+                        else:
+                            capturing = True
+
+                    else:
+                        break
+                    
+                else:
+                    break
+                delta += 1
+
+            # move/capture right down
+            delta = 1
+            capturing = False
+
+            while True:
+                if self.withinBoard(x+delta, y-delta):
+
+                    pos = self.positions[y-delta][x+delta]
+                    if pos == None:
+
+                        if capturing:
+                            captures.append([x+delta, y-delta])
+                        else:
+                            moves.append([x+delta, y-delta])
+
+                    elif pos.player == opp:
+
+                        if capturing:
+                            break
+                        else:
+                            capturing = True
+
+                    else:
+                        break
+                    
+                else:
+                    break
+                delta += 1
         
         # you have to capture if you can
         if len(captures) != 0:
@@ -524,10 +653,9 @@ class Board:
                 self.positions[(yNew+yOld)//2][(xNew+xOld)//2] = None
         
         else:
-            #TODO: test this
             # king capture
-            dirX = 1 if (xNew-xOld)>0 else 1
-            dirY = 1 if (yNew-yOld)>0 else 1
+            dirX = 1 if (xNew-xOld)>0 else -1
+            dirY = 1 if (yNew-yOld)>0 else -1
             while(xOld+dirX!=xNew):
                 xOld += dirX
                 yOld += dirY
