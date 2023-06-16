@@ -45,7 +45,9 @@ class Board:
             maxDepth (int): The max ply for minimax
         """
         self.positions = start_boardstate()
-        #TODO: bug, player cant capture more than 2 times at once
+        #TODO: bug: player cant capture more than 2 times at once
+        #TODO: bug: King sometimes fails to multi-capture
+        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
@@ -181,8 +183,6 @@ class Board:
             list: A list of coordinates the piece can move to
             bool: True if the piece is capturing
         """
-
-        #TODO: fill in the king moves and its multi-captures
         current_piece = self.positions[y][x]
         moves = []
         captures = []
@@ -672,7 +672,7 @@ class Board:
         Returns:
             int: the score, positive = good for white, negative = good for black
         """
-        # TODO: Improve? Only when kings and multi-captures are implemented well
+        # TODO: Improve? Only when everything is done
         score = 0
         for x in range(8):
             for y in range(8):
