@@ -46,7 +46,7 @@ class Board:
         """
         self.positions = start_boardstate()
         #TODO: bug: King sometimes fails to multi-capture
-        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving
+        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving?
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
@@ -543,7 +543,7 @@ class Board:
             int: The score of the boardstate
         """
         #TODO: Verify it works (I think its not optimal due to the absence of minimax in multi-captures)
-        #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster)
+        #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
         if depth % 2 == 0:
             # maximizing
             # current boardstate(self) is directly after black has moved
@@ -669,7 +669,7 @@ class Board:
         Returns:
             int: the score, positive = good for white, negative = good for black
         """
-        # TODO: Improve? Only when everything is done
+        # TODO: Improve? Only when everything else is done
         score = 0
         for x in range(8):
             for y in range(8):
