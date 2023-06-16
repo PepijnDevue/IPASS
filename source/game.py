@@ -44,6 +44,7 @@ def start_game(window, gameMode, maxDepth):
         if playing:
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
+            board.printPos(x,y)
             if gameMode == PVP or current_player == PLAYER_WHITE:
                 if [x,y] in highlighted:
                     # make a move

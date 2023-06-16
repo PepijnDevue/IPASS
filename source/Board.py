@@ -431,14 +431,20 @@ class Board:
         self.move(selected[0], selected[1], x, y)
 
         # let the player capture again if multi-capture is possible
-        tempMandatoryMove = self.mandatoryMove
-        self.mandatoryMove = None
-        nextMove = self.possibleMoves(x, y, current_player)
-        if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
-            nextTurn = False
+        if self.positions[y][x].type == PIECE:
+            tempMandatoryMove = self.mandatoryMove
+            self.mandatoryMove = None
+            nextMove = self.possibleMoves(x, y, current_player)
+            if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
+                nextTurn = False
+            else:
+                nextTurn = True
+            self.mandatoryMove = tempMandatoryMove
         else:
-            nextTurn = True
-        self.mandatoryMove = tempMandatoryMove
+            # TODO: fill (adapt possibleMoves so it tells whether or not a move is a capture)
+            # check if previous move was a capture
+            # check if a capture with the same piece is possible again
+            pass
 
         # prepare next turn
         highlighted = []
