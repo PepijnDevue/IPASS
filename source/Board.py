@@ -45,7 +45,7 @@ class Board:
             maxDepth (int): The max ply for minimax
         """
         self.positions = start_boardstate()
-        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving?
+        #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving? Fixed?
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
@@ -546,18 +546,18 @@ class Board:
         if depth % 2 == 0:
             # maximizing
             # current boardstate(self) is directly after black has moved
-            movingPlayer = PLAYER_WHITE
-            bestScore = -np.inf
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 # Black wins
                 return -100
+            movingPlayer = PLAYER_WHITE
+            bestScore = -np.inf
         else:
             # minimizing
             # current boardstate(self) is directly after black has moved
-            movingPlayer = PLAYER_BLACK
-            bestScore = np.inf
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 return 100
+            movingPlayer = PLAYER_BLACK
+            bestScore = np.inf
             
         if depth == self.maxDepth:
             # Recursion depth found
@@ -572,7 +572,8 @@ class Board:
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    #NOTE: movingPlayer was PLAYER_BLACK first
+                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], movingPlayer)
                     if captured and len(nextMoves) != 0 and capturing:
                         # TODO: find a way to implement minimax here (Choose 3capture over 2capture/create separate branch for each nextMove)
                         nextMove = nextMoves[0]
