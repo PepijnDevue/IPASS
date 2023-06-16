@@ -45,9 +45,9 @@ class Board:
             maxDepth (int): The max ply for minimax
         """
         self.positions = start_boardstate()
-        #TODO: bug: player cant capture more than 2 times at once
         #TODO: bug: King sometimes fails to multi-capture
         #TODO: bug: (Happens only in minimax?), sets newPos to None when capturing/moving
+        #TODO: bug: when capturing more than 2 times at once, you have to select your piece again
         self.mandatoryMove = None
         self.maxDepth = maxDepth
 
@@ -428,15 +428,19 @@ class Board:
             str: The next player
             bool: Whether or not the game is still going
         """
+        #TODO: 3-capture impossibility has to do with not changing mandatoryMove
         # make the move
         self.move(selected[0], selected[1], x, y)
 
         # let the player capture again if multi-capture is possible
+        tempMandatoryMove = self.mandatoryMove
+        self.mandatoryMove = None
         nextMove = self.possibleMoves(x, y, current_player)
         if abs(selected[0] - x) == 2 and len(nextMove) != 0 and abs(nextMove[0][0] - x) == 2:
             nextTurn = False
         else:
             nextTurn = True
+        self.mandatoryMove = tempMandatoryMove
 
         # prepare next turn
         highlighted = []
