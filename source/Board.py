@@ -509,7 +509,10 @@ class Board:
                         move = nextMove
                     else:
                         break
+
+                #TODO: Lees deze whileloop, print de target coordinaten en test
                 
+                print("s", -1, piece, )
                 # get the score of the move
                 score = tempBoard.minimax(0)
 
@@ -567,6 +570,7 @@ class Board:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
+                print("dpm:", depth, piece, move)
                 captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
 
                 # let the bot capture again if multi-capture is possible
@@ -642,6 +646,7 @@ class Board:
         Return:
             bool: if the move was a capture
         """
+        print("m:", xOld, yOld, xNew, yNew)
         captured = False
 
         self.positions[yNew][xNew] = self.positions[yOld][xOld]
