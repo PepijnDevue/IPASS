@@ -516,9 +516,9 @@ class Board:
                 
                 # get the score of the move
                 if currentPlayer == PLAYER_BLACK:
-                    score = tempBoard.minimax(0, False)
-                else:
                     score = tempBoard.minimax(0, True)
+                else:
+                    score = tempBoard.minimax(0, False)
 
                 # if this is the best move yet, remember it
                 if currentPlayer == PLAYER_BLACK:
@@ -555,12 +555,13 @@ class Board:
             int: The score of the boardstate
         """
         #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
+        # print(depth, isMaximizing, depth%2==0, isMaximizing == (depth%2==0))
         if depth == self.maxDepth:
             # Recursion depth found
             return self.estimateScore()
         
         # if maximizing
-        if depth % 2 == 0:
+        if isMaximizing:
             # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 # Black wins
@@ -595,7 +596,7 @@ class Board:
                 # get the score of the move
                 score = tempBoard.minimax(depth+1, not isMaximizing)
 
-                if depth % 2 == 0:
+                if isMaximizing:
                     if score > bestScore:
                         bestScore = score
                 else:
