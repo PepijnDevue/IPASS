@@ -64,7 +64,7 @@ def start_pve(window, starting_player, maxDepth=1):
         starting_player (string): The starting entity (PLAYER or BOT)
         maxDepth (int): The max ply for minimax
     """
-    board = Board.Board(maxDepth)
+    board = Board.Board(maxDepthWhite=maxDepth) if starting_player == BOT else Board.Board(maxDepthBlack=maxDepth)
     current_player = PLAYER_WHITE
     playing = True
     selected = [7,0]
@@ -125,8 +125,7 @@ def start_pve(window, starting_player, maxDepth=1):
 
 
 def start_eve(window, maxDepthWhite, maxDepthBlack):
-    # TODO: find way to include maxDepths
-    board = Board.Board(maxDepthWhite)
+    board = Board.Board(maxDepthWhite, maxDepthBlack)
     current_player = PLAYER_WHITE
     playing = True
     selected = [7,0]
@@ -161,5 +160,10 @@ def start_eve(window, maxDepthWhite, maxDepthBlack):
             button (pyglet.window.mouse): Pyglet object
             modifiers (pyglet.window.mouse): Pyglet object
         """
-        nonlocal pause
+        nonlocal pause, playing, current_player
         pause = not pause
+
+        if not playing:
+            print(f"{current_player} lost")
+            window.clear()
+            menu.open_menu(window)

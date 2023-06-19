@@ -49,26 +49,22 @@ def open_menu(window):
                                   y=85, anchor_x='center', anchor_y='center', color=BLACK)
     
     # PvE toggle button for who begins
-    # TODO: implement
     pve_toggle_button = pyglet.shapes.Rectangle(x=90, y=300, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
     pve_toggle_label = pyglet.text.Label('Speler begint', font_size=20, x=180,
                                   y=325, anchor_x='center', anchor_y='center', color=BLACK)
     pve_start = PLAYER
 
     # PvE counter button for difficulty
-    # TODO: tweak maximum
     pve_counter_button = pyglet.shapes.Rectangle(x=90, y=250, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
     pve_counter_label = pyglet.text.Label(text='Moeilijkheid: 1', font_size=20, x=180, y=275, anchor_x='center', anchor_y="center", color=BLACK)
     pve_counter = 1
 
     # EvE counter button for difficulty
-    # TODO: tweak maximum
     eve_counter_button_w = pyglet.shapes.Rectangle(x=400, y=300, width=BUTTON_WIDTH//0.7, height=BUTTON_HEIGHT//1.4, color=GREY)
     eve_counter_label_w = pyglet.text.Label(text='Moeilijkheid wit: 1', font_size=20, x=530, y=325, anchor_x='center', anchor_y="center", color=BLACK)
     eve_counter_w = 1
 
     # EvE counter button for difficulty
-    # TODO: tweak maximum
     eve_counter_button_b = pyglet.shapes.Rectangle(x=400, y=250, width=BUTTON_WIDTH//0.7, height=BUTTON_HEIGHT//1.4, color=GREY)
     eve_counter_label_b = pyglet.text.Label(text='Moeilijkheid zwart: 1', font_size=20, x=530, y=275, anchor_x='center', anchor_y="center", color=BLACK)
     eve_counter_b = 1

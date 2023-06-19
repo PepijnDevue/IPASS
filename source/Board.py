@@ -37,7 +37,7 @@ class Board:
     positions(list): 2D list representing all positions on the board
     mandatoryMove(None/list): If a player is capturing multiple pieces in one turn, this variable will contain the position of the piece that is multi-capturing
     """
-    def __init__(self, maxDepth=1) -> None:
+    def __init__(self, maxDepthWhite=1, maxDepthBlack=1) -> None:
         """
         Initiate a board object
 
@@ -46,7 +46,8 @@ class Board:
         """
         self.positions = start_boardstate()
         self.mandatoryMove = None
-        self.maxDepth = maxDepth
+        self.maxDepthWhite = maxDepthWhite
+        self.maxDepthBlack = maxDepthBlack
 
 
     def drawPiece(self, x:int, y:int):
@@ -111,32 +112,6 @@ class Board:
             y (int): Y coordinate, 0-7
         """
         pyglet.shapes.Rectangle(x=x*SQUARE_SIZE, y=y*SQUARE_SIZE, width=SQUARE_SIZE, height=SQUARE_SIZE, color=SELECT).draw()
-
-
-    def printPos(self, x:int, y:int):
-        # TODO: remove this function
-        """
-        Print the contents of a square in the cli
-
-        Args:
-            x (int): The x coordinate of the board 0-7
-            y (int): The y coordinate of the board 0-7
-        """
-        piece = self.positions[y][x]
-        if piece == None:
-            print(None, x, y)
-
-        elif piece.type == PIECE:
-            if piece.player == PLAYER_WHITE:
-                print("White piece", x, y)
-            else:
-                print("Black piece", x, y)
-
-        else:
-            if piece.player == PLAYER_WHITE:
-                print("White king", x, y)
-            else:
-                print("Black king", x, y)
 
 
     def getPieces(self, player:str):
@@ -495,6 +470,8 @@ class Board:
         # beware, this isMaximizing is used after playerback made its move, so white is maximizing
         isMaximizing = (currentPlayer == PLAYER_BLACK)
 
+        depth = self.maxDepthBlack if currentPlayer == PLAYER_BLACK else self.maxDepthWhite
+
         # get best move according to minimax
         for piece in self.getPieces(currentPlayer):
             for move in self.possibleMoves(piece[0], piece[1], currentPlayer)[0]:
@@ -513,8 +490,8 @@ class Board:
                     else:
                         break
                 
-                # get the score of the mov
-                score = tempBoard.minimax(0, -np.inf, np.inf, isMaximizing)
+                # get the score of the move
+                score = tempBoard.minimax(depth, -np.inf, np.inf, isMaximizing)
 
                 # if this is the best move yet, remember it
                 if (isMaximizing and score < bestScore) or (not isMaximizing and score > bestScore):
@@ -539,8 +516,7 @@ class Board:
         Returns:
             int: The score of the boardstate
         """
-        #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
-        if depth == self.maxDepth:
+        if depth == 0:
             # Recursion depth found
             return self.estimateScore()
         
@@ -578,7 +554,7 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(depth+1, alpha, beta, not isMaximizing)
+                score = tempBoard.minimax(depth-1, alpha, beta, not isMaximizing)
 
                 if isMaximizing:
                     if score > bestScore:
