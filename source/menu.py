@@ -1,7 +1,7 @@
 # imports
 import pyglet
 from constants import WINDOW_SIZE, BLACK, YELLOW, BUTTON_HEIGHT, BUTTON_WIDTH, GREY, PLAYER, BOT
-from game import start_pvp, start_pve
+from game import start_pvp, start_pve, start_eve
 
 def button_clicked(x:int, y:int, button:pyglet.shapes):
     """
@@ -24,6 +24,8 @@ def open_menu(window):
     Args:
         window (pyglet.window.Window): The window in which the menu should be displayed
     """
+    maxDepth = 7
+
     # display a title and background
     menu_background = pyglet.shapes.Rectangle(
         x=0, y=0, width=WINDOW_SIZE, height=WINDOW_SIZE, color=YELLOW)
@@ -107,13 +109,13 @@ def open_menu(window):
             button (pyglet.window.mouse): Which mouse button was clicked
             modifiers (?): Not used but demanded by pyglet
         """
-        nonlocal pve_start, pve_counter, eve_counter_b, eve_counter_w
+        nonlocal pve_start, pve_counter, eve_counter_b, eve_counter_w, maxDepth
         if button_clicked(x, y, pvp_button):
             start_pvp(window)
         elif button_clicked(x, y, pve_button):
             start_pve(window, pve_start, pve_counter)
         elif button_clicked(x, y, eve_button):
-            print("Eve coming soon")
+            start_eve(window, eve_counter_w, eve_counter_b)
         elif button_clicked(x, y, pve_toggle_button):
             if pve_start == PLAYER:
                 pve_toggle_label.text = "Bot begint"
@@ -122,21 +124,21 @@ def open_menu(window):
                 pve_toggle_label.text = "Speler begint"
                 pve_start = PLAYER
         elif button_clicked(x, y, pve_counter_button):
-            if pve_counter == 5:
+            if pve_counter == maxDepth:
                 pve_counter = 1
                 pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
             else:
                 pve_counter += 1
                 pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
         elif button_clicked(x, y, eve_counter_button_w):
-            if pve_counter == 5:
-                pve_counter = 1
+            if eve_counter_w == maxDepth:
+                eve_counter_w = 1
             else:
-                pve_counter += 1
-            eve_counter_label_w.text = f"Moeilijkheid wit: {pve_counter}"
+                eve_counter_w += 1
+            eve_counter_label_w.text = f"Moeilijkheid wit: {eve_counter_w}"
         elif button_clicked(x, y, eve_counter_button_b):
-            if pve_counter == 5:
-                pve_counter = 1
+            if eve_counter_b == maxDepth:
+                eve_counter_b = 1
             else:
-                pve_counter += 1
-            eve_counter_label_b.text = f"Moeilijkheid zwart: {pve_counter}"
+                eve_counter_b += 1
+            eve_counter_label_b.text = f"Moeilijkheid zwart: {eve_counter_b}"

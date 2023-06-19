@@ -1,7 +1,8 @@
 # imports
 import Board
 import menu
-from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, PVP, PVE, PLAYER, BOT
+from time import sleep
+from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, BOT
 
 
 def start_pvp(window):
@@ -121,3 +122,44 @@ def start_pve(window, starting_player, maxDepth=1):
             print(f"{current_player} lost")
             window.clear()
             menu.open_menu(window)
+
+
+def start_eve(window, maxDepthWhite, maxDepthBlack):
+    # TODO: find way to include maxDepths
+    board = Board.Board(maxDepthWhite)
+    current_player = PLAYER_WHITE
+    playing = True
+    selected = [7,0]
+    highlighted = []
+    pause = False
+
+
+    @window.event
+    def on_draw():
+        """
+        Pyglet on_draw function will trigger every frame
+        """
+        nonlocal highlighted, selected, current_player, playing, board
+        window.clear()
+        board.draw()
+        board.showHighlights(selected, current_player)
+        board.drawSelected(selected[0], selected[1])
+
+        if playing:
+            if pause:
+                sleep(1)
+            selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+
+    @window.event
+    def on_mouse_press(x:int, y:int, button, modifiers):
+        """
+        Pyglet on_mouse_press function will trigger every mouse click
+
+        Args:
+            x (int): The x coordinate of the window
+            y (int): The y coordinate of the window
+            button (pyglet.window.mouse): Pyglet object
+            modifiers (pyglet.window.mouse): Pyglet object
+        """
+        nonlocal pause
+        pause = not pause
