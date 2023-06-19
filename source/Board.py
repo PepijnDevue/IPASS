@@ -151,8 +151,9 @@ class Board:
         """
         positions = []
 
+        # loop through all black squares
         for x in range(8):
-            for y in range(8):
+            for y in range(x%2, 8, 2):
 
                 if(self.positions[y][x] != None and self.positions[y][x].player == player):
                     positions.append((x, y))
@@ -192,11 +193,11 @@ class Board:
             return moves, False
         
         # In the middle of a multi-capture and this piece is not the capturing piece
-        elif(self.mandatoryMove != None and self.mandatoryMove != [x, y]):
+        if(self.mandatoryMove != None and self.mandatoryMove != [x, y]):
             return moves, False
         
         # piece moves
-        elif(current_piece.type == PIECE):
+        if(current_piece.type == PIECE):
             if current_piece.player == PLAYER_WHITE:
                 # move left-up
                 if (self.withinBoard(x-1, y+1) and self.positions[y+1][x-1] == None):
@@ -386,13 +387,12 @@ class Board:
         # you cant move piece A when you can capture with piece B
         canMove = True
         for piece in self.getPieces(player):
-            if piece != [x, y] and self.getMoves(piece[0], piece[1], player)[1] == True:
+            if piece != [x, y] and self.getMoves(piece[0], piece[1], player)[1]:
                 canMove = False
 
         if canMove:
             return moves, False
-        else:
-            return [], False
+        return [], False
         
 
     def showHighlights(self, selected:list, player:str):
@@ -524,9 +524,7 @@ class Board:
         self.positions = random.choice(bestPositionsList)
 
         # check if black has won
-        playing = True
-        if self.numPossibleMoves(PLAYER_WHITE) == 0:
-                playing = False
+        playing = self.numPossibleMoves(PLAYER_WHITE) != 0
 
         return [7,0], [], PLAYER_WHITE, playing
     
@@ -679,7 +677,7 @@ class Board:
         """
         score = 0
         for x in range(8):
-            for y in range(8):
+            for y in range(x%2, 8, 2):
                 pos = self.positions[y][x]
                 if pos == None:
                     pass
