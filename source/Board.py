@@ -514,7 +514,7 @@ class Board:
                         break
                 
                 # get the score of the mov
-                score = tempBoard.minimax(0, isMaximizing)
+                score = tempBoard.minimax(0, -np.inf, np.inf, isMaximizing)
 
                 # if this is the best move yet, remember it
                 if (isMaximizing and score < bestScore) or (not isMaximizing and score > bestScore):
@@ -529,7 +529,7 @@ class Board:
         return [0, 7], [], nextPlayer, playing
     
 
-    def minimax(self, depth, isMaximizing):
+    def minimax(self, depth, alpha, beta, isMaximizing):
         """
         Use recursion to find out what the score of a boardstate is
 
@@ -578,15 +578,21 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(depth+1, not isMaximizing)
+                score = tempBoard.minimax(depth+1, alpha, beta, not isMaximizing)
 
                 if isMaximizing:
                     if score > bestScore:
                         bestScore = score
+                    if score > alpha:
+                        alpha = score
                 else:
                     if score < bestScore:
                         bestScore = score
-
+                    if score < beta:
+                        beta = score
+                if beta <= alpha:
+                    return bestScore
+ 
         return bestScore
 
 
