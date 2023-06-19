@@ -36,13 +36,16 @@ class Board:
 
     positions(list): 2D list representing all positions on the board
     mandatoryMove(None/list): If a player is capturing multiple pieces in one turn, this variable will contain the position of the piece that is multi-capturing
+    maxDepthWhite(int): The ply of white if it is a bot
+    maxDepthBlack(int): The ply of black if it is a bot
     """
-    def __init__(self, maxDepthWhite=1, maxDepthBlack=1) -> None:
+    def __init__(self, maxDepthWhite:int = 1, maxDepthBlack:int = 1) -> None:
         """
         Initiate a board object
 
         Args:
-            maxDepth (int): The max ply for minimax
+            maxDepthWhite (int): The max ply for the white bot
+            maxDepthBlack (int): The max ply for the black bot
         """
         self.positions = start_boardstate()
         self.mandatoryMove = None
@@ -96,7 +99,6 @@ class Board:
             for y in range(8):
                 if y%2 == x%2:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, BROWN).draw()
-
                 else:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
 
@@ -129,12 +131,13 @@ class Board:
         # loop through all black squares
         for x in range(8):
             for y in range(x%2, 8, 2):
-
+                # if the square is not empty and has is the colour searched for, add id
                 if(self.positions[y][x] != None and self.positions[y][x].player == player):
                     positions.append((x, y))
 
         return positions
-    
+
+
     def withinBoard(self, x:int, y:int):
         """
         Check whether or not the coordinates are within the playing field
@@ -212,17 +215,16 @@ class Board:
                 if (self.withinBoard(x+2, y-2) and self.positions[y-1][x+1] != None and self.positions[y-1][x+1].player == PLAYER_WHITE and self.positions[y-2][x+2] == None):
                     captures.append([x+2, y-2])
 
+        # king moves   
         else:
-            # king moves   
-            if(current_piece.player == PLAYER_WHITE):
-                opp = PLAYER_BLACK
-            else:
-                opp = PLAYER_WHITE
+            opp = getOtherPlayer(current_piece.player)
+
             # move/capture left up
             delta = 1
             capturing = False
 
             while True:
+                # loop through upcoming diagonal squares
                 if self.withinBoard(x-delta, y+delta):
 
                     pos = self.positions[y+delta][x-delta]
@@ -252,6 +254,7 @@ class Board:
             capturing = False
 
             while True:
+                # loop through upcoming diagonal squares
                 if self.withinBoard(x+delta, y+delta):
 
                     pos = self.positions[y+delta][x+delta]
@@ -281,6 +284,7 @@ class Board:
             capturing = False
 
             while True:
+                # loop through upcoming diagonal squares
                 if self.withinBoard(x-delta, y-delta):
 
                     pos = self.positions[y-delta][x-delta]
@@ -310,6 +314,7 @@ class Board:
             capturing = False
 
             while True:
+                # loop through upcoming diagonal squares
                 if self.withinBoard(x+delta, y-delta):
 
                     pos = self.positions[y-delta][x+delta]
@@ -353,6 +358,7 @@ class Board:
 
         Returns:
             list: The x and y coordinates of all moves the player can make
+            bool: If the moves are captures
         """
         moves, capturing = self.getMoves(x, y, player)
         # you have to capture if you can
@@ -378,7 +384,7 @@ class Board:
             selected (list): (x, y) coordinates of the selected square
             player (str): Either B or W
         """
-        positions, capturing = self.possibleMoves(selected[0], selected[1], player)
+        positions = self.possibleMoves(selected[0], selected[1], player)[0]
         for pos in positions:
             pyglet.shapes.Rectangle(x=pos[0]*SQUARE_SIZE, 
                                     y=pos[1]*SQUARE_SIZE, 
@@ -418,13 +424,11 @@ class Board:
 
         # prepare next turn
         highlighted = []
-        playing = True
         if current_player == PLAYER_WHITE:
             # check if white has won
             tempMandatoryMove = self.mandatoryMove
             self.mandatoryMove = None
-            if self.numPossibleMoves(PLAYER_BLACK) == 0:
-                playing = False
+            playing = self.numPossibleMoves(PLAYER_BLACK) != 0
             self.mandatoryMove = tempMandatoryMove
 
             # finish the turn if no multi-capture is possible
@@ -439,8 +443,7 @@ class Board:
             # check if black has won
             tempMandatoryMove = self.mandatoryMove
             self.mandatoryMove = None
-            if self.numPossibleMoves(PLAYER_WHITE) == 0:
-                playing = False
+            playing = self.numPossibleMoves(PLAYER_WHITE) != 0
             self.mandatoryMove = tempMandatoryMove
 
             # finish the turn if no multi-capture is possible
@@ -459,15 +462,17 @@ class Board:
         """
         Let the bot take a turn
 
+        Args:
+            currentPlayer (str): The colour of the bot
+
         Returns:
-            list: The position of the default selected square of the player
-            list: Empty list of highlighted square positions
-            str: The next player, always PLAYER_WHITE
-            bool: Whether or not the game has ended
+            List: The coordinates of the selected square
+            List: The coordinates of the possible moves the selected square can move to
+            Str: The current player
+            Bool: True if the game is still playing
         """
         bestScore = np.inf if currentPlayer == PLAYER_BLACK else -np.inf
         bestPositionsList = []
-        # beware, this isMaximizing is used after playerback made its move, so white is maximizing
         isMaximizing = (currentPlayer == PLAYER_BLACK)
 
         depth = self.maxDepthBlack if currentPlayer == PLAYER_BLACK else self.maxDepthWhite
@@ -506,36 +511,37 @@ class Board:
         return [0, 7], [], nextPlayer, playing
     
 
-    def minimax(self, depth, alpha, beta, isMaximizing):
+    def minimax(self, depth:int, alpha:int, beta:int, isMaximizing:bool):
         """
-        Use recursion to find out what the score of a boardstate is
+        Use the minimax algorithm recursively to find out what the score of a boardstate is
 
         Args:
-            depth (int): The current search-depth
+            depth (int): Current depth, counting down from maxDepth to 0
+            alpha (int): The maximizing player's best option
+            beta (int): The minimizing player's best option
+            isMaximizing (bool): True if the current call is maximizing
 
         Returns:
-            int: The score of the boardstate
+            int: The score of the current state of the game
         """
+        # Recursion depth found
         if depth == 0:
-            # Recursion depth found
             return self.estimateScore()
         
-        # if maximizing
         if isMaximizing:
-            # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 # Black wins
                 return -100
             movingPlayer = PLAYER_WHITE
             bestScore = -np.inf
-        # if minimizing
+
         else:
-            # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 return 100
             movingPlayer = PLAYER_BLACK
             bestScore = np.inf    
 
+        # loop through all childnodes (all possible following turns)
         for piece in self.getPieces(movingPlayer):
             for move in self.possibleMoves(piece[0], piece[1], movingPlayer)[0]:
 
@@ -556,16 +562,20 @@ class Board:
                 # get the score of the move
                 score = tempBoard.minimax(depth-1, alpha, beta, not isMaximizing)
 
+                # save the score if it is the best yet
                 if isMaximizing:
                     if score > bestScore:
                         bestScore = score
                     if score > alpha:
                         alpha = score
+
                 else:
                     if score < bestScore:
                         bestScore = score
                     if score < beta:
                         beta = score
+
+                # prune if beta's best option is worse than alpha's best option  
                 if beta <= alpha:
                     return bestScore
  
@@ -603,8 +613,9 @@ class Board:
             list: The positions of the newly highlighted squares
         """
         selected = [x, y]
-        highlighted, capturing = self.possibleMoves(x, y, current_player)
+        highlighted = self.possibleMoves(x, y, current_player)[0]
         return selected, highlighted
+
 
     def move(self, xOld:int, yOld:int, xNew:int, yNew:int):
         """
@@ -647,7 +658,8 @@ class Board:
             self.positions[yNew][xNew].type = KING
 
         return captured
-    
+
+
     def estimateScore(self):
         """
         Estimate the score of a board state
@@ -681,5 +693,7 @@ def getOtherPlayer(player:str):
 
     Args:
         player (str): The one colour
+    Returns:
+        str: W if player = B, B if player = W
     """
     return PLAYER_WHITE if player == PLAYER_BLACK else PLAYER_BLACK

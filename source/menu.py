@@ -19,7 +19,7 @@ def button_clicked(x:int, y:int, button:pyglet.shapes):
 
 def open_menu(window):
     """
-    Open the menu page where the player can choose the game mode, pvp or pve
+    Open the menu page where the player can choose the game mode, pvp, pve or eve
 
     Args:
         window (pyglet.window.Window): The window in which the menu should be displayed
@@ -95,7 +95,7 @@ def open_menu(window):
         pve_label.draw()
 
     @window.event
-    def on_mouse_press(x, y, button, modifiers):
+    def on_mouse_press(x:int, y:int, button, modifiers):
         """
         Handle mouse clicks
 
@@ -106,12 +106,16 @@ def open_menu(window):
             modifiers (?): Not used but demanded by pyglet
         """
         nonlocal pve_start, pve_counter, eve_counter_b, eve_counter_w, maxDepth
+
         if button_clicked(x, y, pvp_button):
             start_pvp(window)
+
         elif button_clicked(x, y, pve_button):
             start_pve(window, pve_start, pve_counter)
+
         elif button_clicked(x, y, eve_button):
             start_eve(window, eve_counter_w, eve_counter_b)
+
         elif button_clicked(x, y, pve_toggle_button):
             if pve_start == PLAYER:
                 pve_toggle_label.text = "Bot begint"
@@ -119,6 +123,7 @@ def open_menu(window):
             else:
                 pve_toggle_label.text = "Speler begint"
                 pve_start = PLAYER
+
         elif button_clicked(x, y, pve_counter_button):
             if pve_counter == maxDepth:
                 pve_counter = 1
@@ -126,12 +131,14 @@ def open_menu(window):
             else:
                 pve_counter += 1
                 pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
+
         elif button_clicked(x, y, eve_counter_button_w):
             if eve_counter_w == maxDepth:
                 eve_counter_w = 1
             else:
                 eve_counter_w += 1
             eve_counter_label_w.text = f"Moeilijkheid wit: {eve_counter_w}"
+            
         elif button_clicked(x, y, eve_counter_button_b):
             if eve_counter_b == maxDepth:
                 eve_counter_b = 1

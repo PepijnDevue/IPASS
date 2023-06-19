@@ -7,7 +7,7 @@ from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, BOT
 
 def start_pvp(window):
     """
-    Initiate all necessary components for the game loop
+    Initiate all necessary components for the pvp game mode
 
     Args:
         window (Pyglet.window): The window object to display the board
@@ -55,9 +55,9 @@ def start_pvp(window):
             menu.open_menu(window)
 
 
-def start_pve(window, starting_player, maxDepth=1):
+def start_pve(window, starting_player:str, maxDepth:int = 1):
     """
-    Initiate all necessary components for the game loop
+    Initiate all necessary components for the pve game mode
 
     Args:
         window (Pyglet.window): The window object to display the board
@@ -71,6 +71,7 @@ def start_pve(window, starting_player, maxDepth=1):
     highlighted = []
     waitFrame = True
     
+    # let the bot start with the first move if the bot is white
     if starting_player == BOT:
         bot_player = PLAYER_WHITE
         selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
@@ -90,7 +91,6 @@ def start_pve(window, starting_player, maxDepth=1):
         board.drawSelected(selected[0], selected[1])
         if current_player == bot_player and playing:
             if not waitFrame:
-                # bot move
                 selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
                 waitFrame = True
             else:
@@ -124,13 +124,21 @@ def start_pve(window, starting_player, maxDepth=1):
             menu.open_menu(window)
 
 
-def start_eve(window, maxDepthWhite, maxDepthBlack):
+def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
+    """
+    Initiate all necessary components for the eve game mode
+
+    Args:
+        window (pyglet.window): The window in which the game will be drawn
+        maxDepthWhite (int): The max ply of the white bot
+        maxDepthBlack (int): The max ply of the black bot 
+    """
     board = Board.Board(maxDepthWhite, maxDepthBlack)
     current_player = PLAYER_WHITE
     playing = True
     selected = [7,0]
     highlighted = []
-    pause = False
+    pause = True
 
 
     @window.event
