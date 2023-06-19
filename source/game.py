@@ -68,6 +68,7 @@ def start_pve(window, starting_player, maxDepth=1):
     playing = True
     selected = [7,0]
     highlighted = []
+    waitFrame = True
     
     if starting_player == BOT:
         bot_player = PLAYER_WHITE
@@ -81,10 +82,18 @@ def start_pve(window, starting_player, maxDepth=1):
         """
         Pyglet on_draw function will trigger every frame
         """
+        nonlocal highlighted, selected, current_player, playing, board, waitFrame
         window.clear()
         board.draw()
         board.showHighlights(selected, current_player)
         board.drawSelected(selected[0], selected[1])
+        if current_player == bot_player and playing:
+            if not waitFrame:
+                # bot move
+                selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+                waitFrame = True
+            else:
+                waitFrame = False
 
     @window.event
     def on_mouse_press(x:int, y:int, button, modifiers):
@@ -105,9 +114,6 @@ def start_pve(window, starting_player, maxDepth=1):
                 if [x,y] in highlighted:
                     # make a move
                     selected, highlighted, current_player, playing = board.handlePlayerTurn(x, y, selected, current_player)
-                    if current_player == bot_player and playing:
-                        # bot move
-                        selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
                 else:
                     # select a square
                     selected, highlighted = board.selectNew(x, y, current_player)
