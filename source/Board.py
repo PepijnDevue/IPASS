@@ -480,7 +480,7 @@ class Board:
         return selected, highlighted,  current_player, playing  
 
     
-    def handleBotTurn(self):
+    def handleBotTurn(self, currentPlayer:str):
         """
         Let the bot take a turn
 
@@ -490,12 +490,15 @@ class Board:
             str: The next player, always PLAYER_WHITE
             bool: Whether or not the game has ended
         """
-        bestScore = np.inf
+        if currentPlayer == PLAYER_BLACK:
+            bestScore = np.inf
+        else:
+            bestScore = -np.inf
         bestPositionsList = []
 
         # get best move according to minimax
-        for piece in self.getPieces(PLAYER_BLACK):
-            for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK)[0]:
+        for piece in self.getPieces(currentPlayer):
+            for move in self.possibleMoves(piece[0], piece[1], currentPlayer)[0]:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
@@ -503,7 +506,7 @@ class Board:
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
+                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], currentPlayer)
                     if captured and len(nextMoves) != 0 and capturing:
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
@@ -512,24 +515,36 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(0)
+                if currentPlayer == PLAYER_BLACK:
+                    score = tempBoard.minimax(0, False)
+                else:
+                    score = tempBoard.minimax(0, True)
 
                 # if this is the best move yet, remember it
-                if score < bestScore:
-                    bestScore = score
-                    bestPositionsList = [tempBoard.positions,]
-                elif score == bestScore:
-                    bestPositionsList.append(tempBoard.positions)
+                if currentPlayer == PLAYER_BLACK:
+                    if score < bestScore:
+                        bestScore = score
+                        bestPositionsList = [tempBoard.positions,]
+                    elif score == bestScore:
+                        bestPositionsList.append(tempBoard.positions)
+                else:
+                    if score > bestScore:
+                        bestPositionsList = [tempBoard.positions,]
+                    elif score == bestScore:
+                        bestPositionsList.append(tempBoard.positions)
 
         self.positions = random.choice(bestPositionsList)
 
         # check if black has won
-        playing = self.numPossibleMoves(PLAYER_WHITE) != 0
-
-        return [7,0], [], PLAYER_WHITE, playing
+        if currentPlayer == PLAYER_BLACK:
+            playing = self.numPossibleMoves(PLAYER_WHITE) != 0
+            return [7,0], [], PLAYER_WHITE, playing
+        else:
+            playing = self.numPossibleMoves(PLAYER_BLACK) != 0
+            return [7,0], [], PLAYER_BLACK, playing
     
 
-    def minimax(self, depth):
+    def minimax(self, depth, isMaximizing):
         """
         Use recursion to find out what the score of a boardstate is
 
@@ -578,7 +593,7 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(depth+1)
+                score = tempBoard.minimax(depth+1, not isMaximizing)
 
                 if depth % 2 == 0:
                     if score > bestScore:
@@ -691,3 +706,13 @@ class Board:
                     else:
                         score += multiplier*2
         return score
+    
+
+def getOtherPlayer(player:str):
+    """
+    Get the other colour
+
+    Args:
+        player (str): The one colour
+    """
+    return PLAYER_WHITE if player == PLAYER_BLACK else PLAYER_BLACK
