@@ -1,7 +1,7 @@
 # imports
 import pyglet
-from constants import WINDOW_SIZE, BLACK, YELLOW, BUTTON_HEIGHT, BUTTON_WIDTH, GREY, PVE, PVP
-from game import start_game
+from constants import WINDOW_SIZE, BLACK, YELLOW, BUTTON_HEIGHT, BUTTON_WIDTH, GREY, PLAYER, BOT
+from game import start_pvp, start_pve
 
 def button_clicked(x:int, y:int, button:pyglet.shapes):
     """
@@ -51,7 +51,7 @@ def open_menu(window):
     pve_toggle_button = pyglet.shapes.Rectangle(x=90, y=300, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
     pve_toggle_label = pyglet.text.Label('Speler begint', font_size=20, x=180,
                                   y=325, anchor_x='center', anchor_y='center', color=BLACK)
-    pve_start = "PLAYER"
+    pve_start = PLAYER
 
     # PvE counter button for difficulty
     # TODO: tweak maximum
@@ -107,20 +107,20 @@ def open_menu(window):
             button (pyglet.window.mouse): Which mouse button was clicked
             modifiers (?): Not used but demanded by pyglet
         """
-        nonlocal pve_start, pve_counter
+        nonlocal pve_start, pve_counter, eve_counter_b, eve_counter_w
         if button_clicked(x, y, pvp_button):
-            start_game(window, PVP)
+            start_pvp(window)
         elif button_clicked(x, y, pve_button):
-            start_game(window, PVE, 3)
+            start_pve(window, pve_start, pve_counter)
         elif button_clicked(x, y, eve_button):
             print("Eve coming soon")
         elif button_clicked(x, y, pve_toggle_button):
-            if pve_start == "PLAYER":
+            if pve_start == PLAYER:
                 pve_toggle_label.text = "Bot begint"
-                pve_start = "BOT"
+                pve_start = BOT
             else:
                 pve_toggle_label.text = "Speler begint"
-                pve_start = "PLAYER"
+                pve_start = PLAYER
         elif button_clicked(x, y, pve_counter_button):
             if pve_counter == 5:
                 pve_counter = 1

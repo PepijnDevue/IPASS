@@ -37,7 +37,7 @@ class Board:
     positions(list): 2D list representing all positions on the board
     mandatoryMove(None/list): If a player is capturing multiple pieces in one turn, this variable will contain the position of the piece that is multi-capturing
     """
-    def __init__(self, maxDepth) -> None:
+    def __init__(self, maxDepth=1) -> None:
         """
         Initiate a board object
 
