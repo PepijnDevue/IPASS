@@ -47,10 +47,17 @@ def open_menu(window):
                                   y=85, anchor_x='center', anchor_y='center', color=BLACK)
     
     # PvE toggle button for who begins
-    pve_toggle_button = pyglet.shapes.Rectangle(x=90, y=330, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
+    # TODO: implement
+    pve_toggle_button = pyglet.shapes.Rectangle(x=90, y=300, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
     pve_toggle_label = pyglet.text.Label('Speler begint', font_size=20, x=180,
-                                  y=355, anchor_x='center', anchor_y='center', color=BLACK)
+                                  y=325, anchor_x='center', anchor_y='center', color=BLACK)
     pve_start = "PLAYER"
+
+    # PvE counter button for difficulty
+    # TODO: tweak maximum
+    pve_counter_button = pyglet.shapes.Rectangle(x=90, y=250, width=BUTTON_WIDTH, height=BUTTON_HEIGHT//1.4, color=GREY)
+    pve_counter_label = pyglet.text.Label(text='Moeilijkheid: 1', font_size=20, x=180, y=275, anchor_x='center', anchor_y="center", color=BLACK)
+    pve_counter = 1
 
     @window.event
     def on_draw():
@@ -65,6 +72,8 @@ def open_menu(window):
         pve_button.draw()
         eve_button.draw()
         pve_toggle_button.draw()
+        pve_counter_button.draw()
+        pve_counter_label.draw()
         pve_toggle_label.draw()
         eve_label.draw()
         pvp_label.draw()
@@ -81,7 +90,7 @@ def open_menu(window):
             button (pyglet.window.mouse): Which mouse button was clicked
             modifiers (?): Not used but demanded by pyglet
         """
-        nonlocal pve_start
+        nonlocal pve_start, pve_counter
         if button_clicked(x, y, pvp_button):
             start_game(window, PVP)
         elif button_clicked(x, y, pve_button):
@@ -95,4 +104,10 @@ def open_menu(window):
             else:
                 pve_toggle_label.text = "Speler begint"
                 pve_start = "PLAYER"
-            print(pve_start)
+        elif button_clicked(x, y, pve_counter_button):
+            if pve_counter == 5:
+                pve_counter = 1
+                pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
+            else:
+                pve_counter += 1
+                pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
