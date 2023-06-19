@@ -95,8 +95,10 @@ class Board:
             for y in range(8):
                 if y%2 == x%2:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, BROWN).draw()
+
                 else:
                     pyglet.shapes.Rectangle(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, YELLOW).draw()
+
                 self.drawPiece(x, y)
 
 
@@ -112,6 +114,7 @@ class Board:
 
 
     def printPos(self, x:int, y:int):
+        # TODO: remove this function
         """
         Print the contents of a square in the cli
 
@@ -502,7 +505,6 @@ class Board:
                 while True:
                     nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
                     if captured and len(nextMoves) != 0 and capturing:
-                        # TODO: find a way to implement minimax here
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
                         move = nextMove
@@ -539,22 +541,21 @@ class Board:
         Returns:
             int: The score of the boardstate
         """
-        #TODO: Verify it works (I think its not optimal due to the absence of minimax in multi-captures)
         #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
         if depth == self.maxDepth:
             # Recursion depth found
             return self.estimateScore()
         
+        # if maximizing
         if depth % 2 == 0:
-            # maximizing
             # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 # Black wins
                 return -100
             movingPlayer = PLAYER_WHITE
             bestScore = -np.inf
+        # if minimizing
         else:
-            # minimizing
             # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
                 return 100
@@ -572,7 +573,6 @@ class Board:
                 while True:
                     nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], movingPlayer)
                     if captured and len(nextMoves) != 0 and capturing:
-                        # TODO: find a way to implement minimax here (Choose 3capture over 2capture/create separate branch for each nextMove)
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
                         move = nextMove
@@ -671,9 +671,11 @@ class Board:
     def estimateScore(self):
         """
         Estimate the score of a board state
+        Pieces count for 1, kings count for 2
+        Positive = good for white, negative = good for black
 
         Returns:
-            int: the score, positive = good for white, negative = good for black
+            int: the score
         """
         score = 0
         for x in range(8):
@@ -691,4 +693,3 @@ class Board:
                     else:
                         score += multiplier*2
         return score
-

@@ -3,7 +3,7 @@ import Board
 import menu
 from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, PVP, PVE
 
-def start_game(window, gameMode, maxDepth):
+def start_game(window, gameMode, maxDepth=1):
     """
     Initiate all necessary components for the game loop
 
@@ -12,7 +12,6 @@ def start_game(window, gameMode, maxDepth):
         gameMode (string): The current game mode (PVE or PVP)
         maxDepth (int): The max ply for minimax
     """
-    print(gameMode)
     board = Board.Board(maxDepth)
     current_player = PLAYER_WHITE
     playing = True
