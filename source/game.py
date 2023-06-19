@@ -71,10 +71,9 @@ def start_pve(window, starting_player, maxDepth=1):
     
     if starting_player == BOT:
         bot_player = PLAYER_WHITE
-        selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+        selected, highlighted, current_player, playing = board.handleBotTurn()
     else:
         bot_player = PLAYER_BLACK
-
 
 
     @window.event
@@ -99,6 +98,7 @@ def start_pve(window, starting_player, maxDepth=1):
             modifiers (pyglet.window.mouse): Pyglet object
         """
         nonlocal selected, highlighted, current_player, playing, board
+        print(playing, current_player, bot_player)
         if playing:
             x = x//SQUARE_SIZE
             y = y//SQUARE_SIZE
@@ -108,7 +108,7 @@ def start_pve(window, starting_player, maxDepth=1):
                     selected, highlighted, current_player, playing = board.handlePlayerTurn(x, y, selected, current_player)
                     if current_player == bot_player and playing:
                         # bot move
-                        selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+                        selected, highlighted, current_player, playing = board.handleBotTurn()
                 else:
                     # select a square
                     selected, highlighted = board.selectNew(x, y, current_player)

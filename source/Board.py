@@ -480,7 +480,7 @@ class Board:
         return selected, highlighted,  current_player, playing  
 
     
-    def handleBotTurn(self, current_player:str):
+    def handleBotTurn(self):
         """
         Let the bot take a turn
 
@@ -490,13 +490,12 @@ class Board:
             str: The next player, always PLAYER_WHITE
             bool: Whether or not the game has ended
         """
+        bestScore = np.inf
         bestPositionsList = []
-        isMaximizing = (current_player==PLAYER_WHITE)
-        bestScore = -np.inf if isMaximizing else np.inf
 
         # get best move according to minimax
-        for piece in self.getPieces(current_player):
-            for move in self.possibleMoves(piece[0], piece[1], current_player)[0]:
+        for piece in self.getPieces(PLAYER_BLACK):
+            for move in self.possibleMoves(piece[0], piece[1], PLAYER_BLACK)[0]:
 
                 # create copy of the board to simulate turns
                 tempBoard = copy.deepcopy(self)
@@ -504,7 +503,7 @@ class Board:
 
                 # let the bot capture again if multi-capture is possible
                 while True:
-                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], current_player)
+                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], PLAYER_BLACK)
                     if captured and len(nextMoves) != 0 and capturing:
                         nextMove = nextMoves[0]
                         captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
@@ -513,13 +512,10 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(0, isMaximizing)
-                
+                score = tempBoard.minimax(0)
+
                 # if this is the best move yet, remember it
-                if not isMaximizing and score < bestScore:
-                    bestScore = score
-                    bestPositionsList = [tempBoard.positions,]
-                elif isMaximizing and score > bestScore:
+                if score < bestScore:
                     bestScore = score
                     bestPositionsList = [tempBoard.positions,]
                 elif score == bestScore:
@@ -527,14 +523,13 @@ class Board:
 
         self.positions = random.choice(bestPositionsList)
 
-        # check if the bot has won
-        otherPlayer = getOtherPlayer(current_player)
-        playing = self.numPossibleMoves(otherPlayer) != 0
+        # check if black has won
+        playing = self.numPossibleMoves(PLAYER_WHITE) != 0
 
-        return [7,0], [], otherPlayer, playing
+        return [7,0], [], PLAYER_WHITE, playing
     
 
-    def minimax(self, depth, isMaximizing):
+    def minimax(self, depth):
         """
         Use recursion to find out what the score of a boardstate is
 
@@ -544,18 +539,20 @@ class Board:
         Returns:
             int: The score of the boardstate
         """
-        #TODO: Make faster(AlphaBetaaaaaaa)
+        #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
         if depth == self.maxDepth:
             # Recursion depth found
             return self.estimateScore()
         
-        if isMaximizing:
+        # if maximizing
+        if depth % 2 == 0:
             # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_WHITE) == 0:
                 # Black wins
                 return -100
             movingPlayer = PLAYER_WHITE
             bestScore = -np.inf
+        # if minimizing
         else:
             # current boardstate(self) is directly after black has moved
             if self.numPossibleMoves(PLAYER_BLACK) == 0:
@@ -581,9 +578,9 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(depth+1, not isMaximizing)
+                score = tempBoard.minimax(depth+1)
 
-                if isMaximizing:
+                if depth % 2 == 0:
                     if score > bestScore:
                         bestScore = score
                 else:
@@ -694,12 +691,3 @@ class Board:
                     else:
                         score += multiplier*2
         return score
-    
-def getOtherPlayer(player:str):
-    """
-    Get the other colour
-
-    Args:
-        player (str): The one colour
-    """
-    return PLAYER_WHITE if player == PLAYER_BLACK else PLAYER_BLACK
