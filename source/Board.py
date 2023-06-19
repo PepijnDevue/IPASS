@@ -518,6 +518,7 @@ class Board:
                 if currentPlayer == PLAYER_BLACK:
                     score = tempBoard.minimax(0, True)
                 else:
+                    # ligt hieraan? (aan true/false)?
                     score = tempBoard.minimax(0, False)
 
                 # if this is the best move yet, remember it
@@ -529,19 +530,19 @@ class Board:
                         bestPositionsList.append(tempBoard.positions)
                 else:
                     if score > bestScore:
+                        bestScore = score
                         bestPositionsList = [tempBoard.positions,]
                     elif score == bestScore:
                         bestPositionsList.append(tempBoard.positions)
 
         self.positions = random.choice(bestPositionsList)
-
         # check if black has won
         if currentPlayer == PLAYER_BLACK:
             playing = self.numPossibleMoves(PLAYER_WHITE) != 0
             return [7,0], [], PLAYER_WHITE, playing
         else:
             playing = self.numPossibleMoves(PLAYER_BLACK) != 0
-            return [7,0], [], PLAYER_BLACK, playing
+            return [0,7], [], PLAYER_BLACK, playing
     
 
     def minimax(self, depth, isMaximizing):
@@ -555,7 +556,6 @@ class Board:
             int: The score of the boardstate
         """
         #TODO: Make faster(AlphaBetaaaaaaa, Make subfunctions faster): Only when everything is fully functional
-        # print(depth, isMaximizing, depth%2==0, isMaximizing == (depth%2==0))
         if depth == self.maxDepth:
             # Recursion depth found
             return self.estimateScore()
