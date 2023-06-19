@@ -59,6 +59,19 @@ def open_menu(window):
     pve_counter_label = pyglet.text.Label(text='Moeilijkheid: 1', font_size=20, x=180, y=275, anchor_x='center', anchor_y="center", color=BLACK)
     pve_counter = 1
 
+    # EvE counter button for difficulty
+    # TODO: tweak maximum
+    eve_counter_button_w = pyglet.shapes.Rectangle(x=400, y=300, width=BUTTON_WIDTH//0.7, height=BUTTON_HEIGHT//1.4, color=GREY)
+    eve_counter_label_w = pyglet.text.Label(text='Moeilijkheid wit: 1', font_size=20, x=530, y=325, anchor_x='center', anchor_y="center", color=BLACK)
+    eve_counter_w = 1
+
+    # EvE counter button for difficulty
+    # TODO: tweak maximum
+    eve_counter_button_b = pyglet.shapes.Rectangle(x=400, y=250, width=BUTTON_WIDTH//0.7, height=BUTTON_HEIGHT//1.4, color=GREY)
+    eve_counter_label_b = pyglet.text.Label(text='Moeilijkheid zwart: 1', font_size=20, x=530, y=275, anchor_x='center', anchor_y="center", color=BLACK)
+    eve_counter_b = 1
+
+
     @window.event
     def on_draw():
         """
@@ -73,6 +86,10 @@ def open_menu(window):
         eve_button.draw()
         pve_toggle_button.draw()
         pve_counter_button.draw()
+        eve_counter_button_w.draw()
+        eve_counter_button_b.draw()
+        eve_counter_label_b.draw()
+        eve_counter_label_w.draw()
         pve_counter_label.draw()
         pve_toggle_label.draw()
         eve_label.draw()
@@ -111,3 +128,15 @@ def open_menu(window):
             else:
                 pve_counter += 1
                 pve_counter_label.text = f"Moeilijkheid: {pve_counter}"
+        elif button_clicked(x, y, eve_counter_button_w):
+            if pve_counter == 5:
+                pve_counter = 1
+            else:
+                pve_counter += 1
+            eve_counter_label_w.text = f"Moeilijkheid wit: {pve_counter}"
+        elif button_clicked(x, y, eve_counter_button_b):
+            if pve_counter == 5:
+                pve_counter = 1
+            else:
+                pve_counter += 1
+            eve_counter_label_b.text = f"Moeilijkheid zwart: {pve_counter}"
