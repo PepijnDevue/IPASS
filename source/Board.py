@@ -1,9 +1,10 @@
 # imports
 from Piece import Piece
 import pyglet
-import numpy as np
-import copy
-import random
+from numpy import Inf
+from copy import deepcopy
+from random import choice
+from minimax.algorithm import minimax as minimax_func
 from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT, SELECT, BROWN, YELLOW
 
 def start_boardstate():
@@ -51,6 +52,9 @@ class Board:
         self.mandatoryMove = None
         self.maxDepthWhite = maxDepthWhite
         self.maxDepthBlack = maxDepthBlack
+
+
+    minimax = minimax_func
 
 
     def drawPiece(self, x:int, y:int):
@@ -471,7 +475,7 @@ class Board:
             Str: The current player
             Bool: True if the game is still playing
         """
-        bestScore = np.inf if currentPlayer == PLAYER_BLACK else -np.inf
+        bestScore = Inf if currentPlayer == PLAYER_BLACK else -Inf
         bestPositionsList = []
         isMaximizing = (currentPlayer == PLAYER_BLACK)
 
@@ -482,7 +486,7 @@ class Board:
             for move in self.possibleMoves(piece[0], piece[1], currentPlayer)[0]:
 
                 # create copy of the board to simulate turns
-                tempBoard = copy.deepcopy(self)
+                tempBoard = deepcopy(self)
                 captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
 
                 # let the bot capture again if multi-capture is possible
@@ -496,7 +500,7 @@ class Board:
                         break
                 
                 # get the score of the move
-                score = tempBoard.minimax(depth, -np.inf, np.inf, isMaximizing)
+                score = tempBoard.minimax(depth, -Inf, Inf, isMaximizing)
 
                 # if this is the best move yet, remember it
                 if (isMaximizing and score < bestScore) or (not isMaximizing and score > bestScore):
@@ -505,81 +509,11 @@ class Board:
                 elif score == bestScore:
                     bestPositionsList.append(tempBoard.positions)
 
-        self.positions = random.choice(bestPositionsList)
+        self.positions = choice(bestPositionsList)
         nextPlayer = getOtherPlayer(currentPlayer)
         playing = self.numPossibleMoves(nextPlayer) != 0
-        return [0, 7], [], nextPlayer, playing
-    
-
-    def minimax(self, depth:int, alpha:int, beta:int, isMaximizing:bool):
-        """
-        Use the minimax algorithm recursively to find out what the score of a boardstate is
-
-        Args:
-            depth (int): Current depth, counting down from maxDepth to 0
-            alpha (int): The maximizing player's best option
-            beta (int): The minimizing player's best option
-            isMaximizing (bool): True if the current call is maximizing
-
-        Returns:
-            int: The score of the current state of the game
-        """
-        # Recursion depth found
-        if depth == 0:
-            return self.estimateScore()
-        
-        if isMaximizing:
-            if self.numPossibleMoves(PLAYER_WHITE) == 0:
-                # Black wins
-                return -100
-            movingPlayer = PLAYER_WHITE
-            bestScore = -np.inf
-
-        else:
-            if self.numPossibleMoves(PLAYER_BLACK) == 0:
-                return 100
-            movingPlayer = PLAYER_BLACK
-            bestScore = np.inf    
-
-        # loop through all childnodes (all possible following turns)
-        for piece in self.getPieces(movingPlayer):
-            for move in self.possibleMoves(piece[0], piece[1], movingPlayer)[0]:
-
-                # create copy of the board to simulate turns
-                tempBoard = copy.deepcopy(self)
-                captured = tempBoard.move(piece[0], piece[1], move[0], move[1])
-
-                # let the bot capture again if multi-capture is possible
-                while True:
-                    nextMoves, capturing = tempBoard.possibleMoves(move[0], move[1], movingPlayer)
-                    if captured and len(nextMoves) != 0 and capturing:
-                        nextMove = nextMoves[0]
-                        captured = tempBoard.move(move[0], move[1], nextMove[0], nextMove[1])
-                        move = nextMove
-                    else:
-                        break
-                
-                # get the score of the move
-                score = tempBoard.minimax(depth-1, alpha, beta, not isMaximizing)
-
-                # save the score if it is the best yet
-                if isMaximizing:
-                    if score > bestScore:
-                        bestScore = score
-                    if score > alpha:
-                        alpha = score
-
-                else:
-                    if score < bestScore:
-                        bestScore = score
-                    if score < beta:
-                        beta = score
-
-                # prune if beta's best option is worse than alpha's best option  
-                if beta <= alpha:
-                    return bestScore
- 
-        return bestScore
+        selected = [0,7] if nextPlayer == PLAYER_WHITE else [7,0]
+        return selected, [], nextPlayer, playing
 
 
     def numPossibleMoves(self, player:str):

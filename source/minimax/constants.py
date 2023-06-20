@@ -1,0 +1,2 @@
+PLAYER_BLACK = "B"
+PLAYER_WHITE = "W"
