@@ -138,7 +138,7 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
     playing = True
     selected = [7,0]
     highlighted = []
-    pause = False
+    pause = True
 
 
     @window.event
