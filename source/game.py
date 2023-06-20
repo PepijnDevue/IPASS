@@ -1,6 +1,7 @@
 # imports
 import Board
 import menu
+import pyglet.window.mouse
 from time import sleep
 from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, BOT
 
@@ -138,7 +139,8 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
     playing = True
     selected = [7,0]
     highlighted = []
-    pause = True
+    pause = False
+    pausing = True
 
 
     @window.event
@@ -146,19 +148,19 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
         """
         Pyglet on_draw function will trigger every frame
         """
-        nonlocal highlighted, selected, current_player, playing, board
+        nonlocal highlighted, selected, current_player, playing, board, pause, pausing
         window.clear()
         board.draw()
         board.showHighlights(selected, current_player)
         board.drawSelected(selected[0], selected[1])
 
         if playing:
-            if pause:
-                sleep(1)
-            selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+            if not pause or not pausing:
+                selected, highlighted, current_player, playing = board.handleBotTurn(current_player)
+                pause = True
 
     @window.event
-    def on_mouse_press(x:int, y:int, button, modifiers):
+    def on_mouse_press(x:int, y:int, buttons, modifiers):
         """
         Pyglet on_mouse_press function will trigger every mouse click
 
@@ -168,8 +170,10 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
             button (pyglet.window.mouse): Pyglet object
             modifiers (pyglet.window.mouse): Pyglet object
         """
-        nonlocal pause, playing, current_player
-        pause = not pause
+        nonlocal pause, playing, current_player, pausing
+        pause = False if buttons & pyglet.window.mouse.LEFT else True
+
+        pausing = not pausing if buttons & pyglet.window.mouse.RIGHT else pausing
 
         if not playing:
             print(f"{current_player} lost")
