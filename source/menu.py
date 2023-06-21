@@ -1,6 +1,6 @@
 # imports
 import pyglet
-from constants import WINDOW_SIZE, BLACK, YELLOW, BUTTON_HEIGHT, BUTTON_WIDTH, GREY, PLAYER, BOT
+from constants import WINDOW_SIZE, BLACK, YELLOW, BUTTON_HEIGHT, BUTTON_WIDTH, GREY, PLAYER, BOT, PLAYER_WHITE
 from game import start_pvp, start_pve, start_eve
 
 def button_clicked(x:int, y:int, button:pyglet.shapes):
@@ -16,6 +16,7 @@ def button_clicked(x:int, y:int, button:pyglet.shapes):
         bool: True when the given button was clicked
     """
     return x > button.x and x < button.x+button.width and y > button.y and y < button.y+button.height
+
 
 def open_menu(window):
     """
@@ -69,6 +70,17 @@ def open_menu(window):
     eve_counter_label_b = pyglet.text.Label(text='Moeilijkheid zwart: 1', font_size=20, x=530, y=275, anchor_x='center', anchor_y="center", color=BLACK)
     eve_counter_b = 1
 
+    @window.event
+    def on_key_release(symbol, modifiers):
+        """
+        Triggers when a keyboard key is released
+
+        Args:
+            symbol (Pyglet.window.key): The keys pressed at the moment
+            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
+        """
+        if symbol & pyglet.window.key.ESCAPE:
+            pyglet.app.exit()
 
     @window.event
     def on_draw():
@@ -145,3 +157,63 @@ def open_menu(window):
             else:
                 eve_counter_b += 1
             eve_counter_label_b.text = f"Moeilijkheid zwart: {eve_counter_b}"
+
+
+def show_end(window, winner):
+    """
+    Show a post-game display telling who has won
+
+    Args:
+        window (Pyglet.window): The window to display the screen in
+        winner (str): Either W for white or B for black
+    """
+    window.clear()
+    # display a title and background
+    winner = "Wit" if winner == PLAYER_WHITE else "Zwart"
+    background = pyglet.shapes.Rectangle(
+        x=0, y=0, width=WINDOW_SIZE, height=WINDOW_SIZE, color=YELLOW)
+    title = pyglet.text.Label(f'{winner} heeft gewonnen!', font_size=44, x=WINDOW_SIZE//2,
+                              y=WINDOW_SIZE//1.4, anchor_x='center', anchor_y='center', color=BLACK)
+    
+    # display a button for going back to the menu
+    menu_button = pyglet.shapes.Rectangle(x=WINDOW_SIZE//2-BUTTON_WIDTH//2, y=WINDOW_SIZE//3-BUTTON_HEIGHT, width=BUTTON_WIDTH, height=BUTTON_HEIGHT, color=GREY)
+    menu_label = pyglet.text.Label('Menu', font_size=28, x=WINDOW_SIZE//2,
+                                  y=WINDOW_SIZE//3-25, anchor_x='center', anchor_y='center', color=BLACK)
+
+    @window.event
+    def on_key_release(symbol, modifiers):
+        """
+        Triggers when a keyboard key is released
+
+        Args:
+            symbol (Pyglet.window.key): The keys pressed at the moment
+            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
+        """
+        if symbol & pyglet.window.key.ESCAPE:
+            pyglet.app.exit()
+
+    @window.event
+    def on_draw():
+        """
+        Pyglet on_draw function will trigger every frame
+        """
+        window.clear()
+        background.draw()
+        title.draw()
+        menu_button.draw()
+        menu_label.draw()
+
+
+    @window.event
+    def on_mouse_press(x:int, y:int, buttons, modifiers):
+        """
+        Pyglet on_mouse_press function will trigger every mouse click
+
+        Args:
+            x (int): The x coordinate of the window
+            y (int): The y coordinate of the window
+            button (pyglet.window.mouse): Pyglet object
+            modifiers (pyglet.window.mouse): Pyglet object
+        """
+        if button_clicked(x, y, menu_button):
+            open_menu(window)

@@ -1,7 +1,7 @@
 # imports
 import Board
 import menu
-import pyglet.window.mouse
+import pyglet
 from time import sleep
 from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, BOT
 
@@ -18,6 +18,18 @@ def start_pvp(window):
     playing = True
     selected = [7,0]
     highlighted = []
+
+    @window.event
+    def on_key_release(symbol, modifiers):
+        """
+        Triggers when a keyboard key is released
+
+        Args:
+            symbol (Pyglet.window.key): The keys pressed at the moment
+            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
+        """
+        if symbol & pyglet.window.key.ESCAPE:
+            pyglet.app.exit()
 
     @window.event
     def on_draw():
@@ -51,9 +63,7 @@ def start_pvp(window):
                 # select a square
                 selected, highlighted = board.selectNew(x, y, current_player)
         else:
-            print(f"{current_player} lost")
-            window.clear()
-            menu.open_menu(window)
+            menu.show_end(window, Board.getOtherPlayer(current_player))
 
 
 def start_pve(window, starting_player:str, maxDepth:int = 1):
@@ -79,6 +89,17 @@ def start_pve(window, starting_player:str, maxDepth:int = 1):
     else:
         bot_player = PLAYER_BLACK
 
+    @window.event
+    def on_key_release(symbol, modifiers):
+        """
+        Triggers when a keyboard key is released
+
+        Args:
+            symbol (Pyglet.window.key): The keys pressed at the moment
+            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
+        """
+        if symbol & pyglet.window.key.ESCAPE:
+            pyglet.app.exit()
 
     @window.event
     def on_draw():
@@ -120,9 +141,7 @@ def start_pve(window, starting_player:str, maxDepth:int = 1):
                     # select a square
                     selected, highlighted = board.selectNew(x, y, current_player)
         else:
-            print(f"{current_player} lost")
-            window.clear()
-            menu.open_menu(window)
+            menu.show_end(window, Board.getOtherPlayer(current_player))
 
 
 def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
@@ -142,6 +161,17 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
     pause = False
     pausing = True
 
+    @window.event
+    def on_key_release(symbol, modifiers):
+        """
+        Triggers when a keyboard key is released
+
+        Args:
+            symbol (Pyglet.window.key): The keys pressed at the moment
+            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
+        """
+        if symbol & pyglet.window.key.ESCAPE:
+            pyglet.app.exit()
 
     @window.event
     def on_draw():
@@ -176,6 +206,4 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
         pausing = not pausing if buttons & pyglet.window.mouse.RIGHT else pausing
 
         if not playing:
-            print(f"{current_player} lost")
-            window.clear()
-            menu.open_menu(window)
+            menu.show_end(window, Board.getOtherPlayer(current_player))
