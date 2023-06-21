@@ -2,7 +2,6 @@
 import Board
 import menu
 import pyglet
-from time import sleep
 from constants import SQUARE_SIZE, PLAYER_BLACK, PLAYER_WHITE, BOT
 
 
@@ -18,18 +17,6 @@ def start_pvp(window):
     playing = True
     selected = [7,0]
     highlighted = []
-
-    @window.event
-    def on_key_release(symbol, modifiers):
-        """
-        Triggers when a keyboard key is released
-
-        Args:
-            symbol (Pyglet.window.key): The keys pressed at the moment
-            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
-        """
-        if symbol & pyglet.window.key.ESCAPE:
-            pyglet.app.exit()
 
     @window.event
     def on_draw():
@@ -90,18 +77,6 @@ def start_pve(window, starting_player:str, maxDepth:int = 1):
         bot_player = PLAYER_BLACK
 
     @window.event
-    def on_key_release(symbol, modifiers):
-        """
-        Triggers when a keyboard key is released
-
-        Args:
-            symbol (Pyglet.window.key): The keys pressed at the moment
-            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
-        """
-        if symbol & pyglet.window.key.ESCAPE:
-            pyglet.app.exit()
-
-    @window.event
     def on_draw():
         """
         Pyglet on_draw function will trigger every frame
@@ -160,18 +135,6 @@ def start_eve(window, maxDepthWhite:int, maxDepthBlack:int):
     highlighted = []
     pause = False
     pausing = True
-
-    @window.event
-    def on_key_release(symbol, modifiers):
-        """
-        Triggers when a keyboard key is released
-
-        Args:
-            symbol (Pyglet.window.key): The keys pressed at the moment
-            modifiers (Pyglet.window.key): The modifying keys pressed at the moment, eg shift
-        """
-        if symbol & pyglet.window.key.ESCAPE:
-            pyglet.app.exit()
 
     @window.event
     def on_draw():
