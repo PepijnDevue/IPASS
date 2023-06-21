@@ -1,7 +1,7 @@
 # Dammen met Minimax - IPASS
 
 ## Introductie
-Dit is mijn IPASS-AI project waarin het minimax algoritme wordt geïmplementeerd op het spel dammen. Zo heb je altijd iemand om tegen te spelen.
+Dit is mijn IPASS-AI project waarin met gebruik van OOP in Python het minimax algoritme wordt geïmplementeerd op het spel dammen. Zo heb je altijd iemand om tegen te spelen.
 
 ## Opdrachtomschrijving
 Mijn vader, een beginnende dammer, wilt beter worden met het spel.
@@ -38,3 +38,26 @@ Om het programma af te spelen hoeft u alleen [checkers.exe](checkers.exe) te ope
 
 ## FAQ
 * Q: Hoe kan ik een moeilijkheid selecteren in het menu?
+* A: Klik op de knop "Moeilijkheid", de moeilijkheid zal dan veranderen
+* Q: Hoe kies ik wie er begint bij PvE?
+* A: Klik op de knop ".. Begint", u zult de knop van speler naar bot zien springen en andersom
+* Q: Hoe Ga ik naar de volgende zet in EvE
+* A: Klik ergens op het scherm met de linkermuisknop, de volgende zet zal afgebeeld worden
+* Q: Hoe kan ik FFW doen in EvE
+* A: Klik ergens op het scherm met de rechtermuisknop, het spel zal in FFW modus afgespeeld worden, klik nog een keer om weer naar normale modus te gaan
+
+## Bronnen
+* Jonathan Schaeffer et al. ,Checkers Is Solved.Science317,1518-1522(2007).DOI:10.1126/science.1144079
+* Strong, G. S. (2011). The minimax algorithm. Minimax-notes. http://users.encs.concordia.ca/~kharma/coen352/Project/Minimax-notes.pdf
+* GeeksforGeeks. (2023). Minimax Algorithm in Game Theory   Set 4  Alpha Beta Pruning. GeeksforGeeks. https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/
+* Constants — NumPy v2.0.dev0 Manual. (n.d.). https://numpy.org/devdocs/reference/constants.html
+* GeeksforGeeks. (2021). Default arguments in Python. GeeksforGeeks. https://www.geeksforgeeks.org/default-arguments-in-python/
+* Python Classes. (n.d.). https://www.w3schools.com/python/python_classes.asp
+* GeeksforGeeks. (2022). PYGLET   On Draw Event. GeeksforGeeks. https://www.geeksforgeeks.org/pyglet-on-draw-event/
+* pyglet Documentation — pyglet v2.0.7. (n.d.). https://pyglet.readthedocs.io/en/latest/index.html#
+
+## License
+[Lees hier](LICENSE.txt), GNU general public license, open source, gebruik en aanpassing mag maar dat moet ook open source zijn en deze licence hebben. Aanpassingen moeten gemeld worden.
+
+## Contact
+pepijndevue@hotmail.com
