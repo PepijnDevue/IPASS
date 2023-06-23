@@ -617,7 +617,7 @@ class Board:
                     if pos.type == PIECE:
                         score += multiplier*1
                     else:
-                        score += multiplier*2
+                        score += multiplier*3
         return score
     
 
