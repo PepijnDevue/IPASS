@@ -512,7 +512,7 @@ class Board:
         self.positions = choice(bestPositionsList)
         nextPlayer = getOtherPlayer(currentPlayer)
         playing = self.numPossibleMoves(nextPlayer) != 0
-        selected = [0,7] if nextPlayer == PLAYER_WHITE else [7,0]
+        selected = [7,0] if nextPlayer == PLAYER_WHITE else [0,7]
         return selected, [], nextPlayer, playing
 
 
