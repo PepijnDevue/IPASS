@@ -5,7 +5,7 @@ from numpy import Inf
 from copy import deepcopy
 from random import choice
 from minimax.algorithm import minimax as minimax_func
-from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT, SELECT, BROWN, YELLOW
+from constants import PLAYER_BLACK, PLAYER_WHITE, SQUARE_SIZE, BLACK, WHITE, PIECE, KING, HIGHLIGHT, SELECT, BROWN, YELLOW, INNER_BLACK, INNER_WHITE
 
 def start_boardstate():
     """
@@ -74,6 +74,9 @@ class Board:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  radius=SQUARE_SIZE//3, color=BLACK).draw()
+            pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2,
+                                y=y*SQUARE_SIZE+SQUARE_SIZE//2,
+                                radius=SQUARE_SIZE//4, color=INNER_BLACK).draw()
             if piece.type == KING:
                 pyglet.shapes.Star(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
                                    y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
@@ -86,6 +89,9 @@ class Board:
             pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2,
                                  y=y*SQUARE_SIZE+SQUARE_SIZE//2, 
                                  radius=SQUARE_SIZE//3, color=WHITE).draw()
+            pyglet.shapes.Circle(x=x*SQUARE_SIZE+SQUARE_SIZE//2,
+                                y=y*SQUARE_SIZE+SQUARE_SIZE//2,
+                                radius=SQUARE_SIZE//4, color=INNER_WHITE).draw()
             if piece.type == KING:
                 pyglet.shapes.Star(x=x*SQUARE_SIZE+SQUARE_SIZE//2, 
                                    y=y*SQUARE_SIZE+SQUARE_SIZE//2, 

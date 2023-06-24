@@ -6,8 +6,7 @@ Dit is mijn IPASS-AI project waarin met gebruik van OOP in Python het minimax al
 ## Opdrachtomschrijving
 Mijn vader, een beginnende dammer, wilt beter worden met het spel.
 Het probleem is alleen dat er niet altijd iemand is die met hem wilt dammen
-en zelfs als er iemand is dat het moeilijk is om op zo'n niveau te spelen dat het 
-moeilijk is om te winnen maar niet onmogelijk.
+en zelfs als er iemand is dat diegene meestal niet het zelfde niveau beheerst
 
 Een minimax algoritme denkt een gegeven aantal stappen vooruit en bepaalt zo een zet
 om te doen, hoe meer stappen er vooruit wordt gedacht, hoe moeilijker.
