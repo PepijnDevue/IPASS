@@ -3,6 +3,8 @@ from copy import deepcopy
 from constants import PLAYER_BLACK, PLAYER_WHITE
 from numpy import Inf
 
+
+
 def minimax(self, depth:int, alpha:int, beta:int, isMaximizing:bool):
     """
     Use the minimax algorithm recursively to find out what the score of a boardstate is
